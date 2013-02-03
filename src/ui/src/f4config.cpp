@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <windows.h>
 #include "../../SIM/INCLUDE/Phyconst.h" //JAM 19Sep03
+#include <iostream>
+#include <new>
 
 template<class T>
 class ConfigOption
@@ -1310,6 +1312,10 @@ void ParseFalcon4Config(FILE *file)
     char strVal[0x100];
     // float nFloatVal;
 
+	strLine[0] = '\0';
+	strID[0] = '\0';
+	strVal[0] = '\0';
+
 NextLine:
 
     while (fgets(strLine, sizeof(strLine) / sizeof(strLine[0]), file))
@@ -1317,7 +1323,7 @@ NextLine:
         if ((strlen(strLine) <= 1) || (strstr(strLine, "//") == strLine))
             continue;
 
-        if (sscanf(strLine, "set %s \"%s\"", strID, &strVal) == 2)
+        if (sscanf(strLine, "set %s \"%s\"", strID, strVal) == 2)
         {
             if (strstr(strID, "g_s") == strID)
             {
@@ -1404,75 +1410,91 @@ NextLine:
 void ReadFalcon4Config()
 {
     int nBufLen = 1024;
-    char *strAppPath = new char[nBufLen];
+	char* strAppPath = NULL;
+	char* strDir = NULL;
+	try
+	{
+		strAppPath = new char[nBufLen];
 
-    if (!strAppPath) return;
+		if (!strAppPath) 
+			return;
 
-    char *strDir = new char[nBufLen];
+		strDir = new char[nBufLen];
 
-    if (!strDir) return;
+		if (!strDir) 
+			return;
 
-    // sprintf(strDir, "%s\\FalconBMS.cfg", FalconDataDirectory);
-    // sprintf(strDir, "%s\\Cobra.cfg", FalconDataDirectory);
-    sprintf(strDir, "%s\\FFViper.cfg", FalconDataDirectory);
-    FILE *file = fopen(strDir, "r");
+		// sprintf(strDir, "%s\\FalconBMS.cfg", FalconDataDirectory);
+		// sprintf(strDir, "%s\\Cobra.cfg", FalconDataDirectory);
+		sprintf(strDir, "%s\\FFViper.cfg", FalconDataDirectory);
+		FILE *file = fopen(strDir, "r");
 
-    if (!file)
-    {
-        // strcpy(strDir, "FalconBMS.cfg");
-        // strcpy(strDir, "Cobra.cfg");
-        strcpy(strDir, "FFViper.cfg");
-        file = fopen(strDir, "r");
-    }
+		if (!file)
+		{
+			// strcpy(strDir, "FalconBMS.cfg");
+			// strcpy(strDir, "Cobra.cfg");
+			strcpy(strDir, "FFViper.cfg");
+			file = fopen(strDir, "r");
+		}
 
-    if (!file)
-    {
-        // Investigate program directory
-        HMODULE Module = ::GetModuleHandle(NULL);
+		if (!file)
+		{
+			// Investigate program directory
+			HMODULE Module = ::GetModuleHandle(NULL);
 
-        if (!::GetModuleFileName(Module, strAppPath, nBufLen)) return;
+			if (!::GetModuleFileName(Module, strAppPath, nBufLen)) return;
 
-        int nAppPathLen = strlen(strAppPath);
+			int nAppPathLen = strlen(strAppPath);
 
-        if (nAppPathLen < 2) return;
+			if (nAppPathLen < 2) return;
 
-        char *p = &strAppPath[nAppPathLen - 1];
+			char *p = &strAppPath[nAppPathLen - 1];
 
-        while (p > strAppPath && *p != '\\') p--;
+			while (p > strAppPath && *p != '\\') p--;
 
-        if (p == strAppPath) return;
+			if (p == strAppPath) return;
 
-        p++;
-        int nDirLen = p - strAppPath;
-        memcpy(strDir, strAppPath, nDirLen);
-        strDir[nDirLen] = '\0';
-        // strcat(strDir, "FalconBMS.cfg");
-        strcat(strDir, "FFViper.cfg");
-        file = fopen(strDir, "r");
-    }
+			p++;
+			int nDirLen = p - strAppPath;
+			memcpy(strDir, strAppPath, nDirLen);
+			strDir[nDirLen] = '\0';
+			// strcat(strDir, "FalconBMS.cfg");
+			strcat(strDir, "FFViper.cfg");
+			file = fopen(strDir, "r");
+		}
 
-    if (file)
-    {
-        ParseFalcon4Config(file);
-        fclose(file);
-    }
+		if (file)
+		{
+			ParseFalcon4Config(file);
+			fclose(file);
+		}
 
-    // JB 010104 Second config file overrides the first and can be CRC checked by anti-cheat programs.
-    // strcat(strDir, "FalconBMSServer.cfg");
-    strcat(strDir, "FFViperServer.cfg");
-    file = fopen(strDir, "r");
+		// JB 010104 Second config file overrides the first and can be CRC checked by anti-cheat programs.
+		// strcat(strDir, "FalconBMSServer.cfg");
+		strcat(strDir, "FFViperServer.cfg");
+		file = fopen(strDir, "r");
 
-    if (file)
-    {
-        ParseFalcon4Config(file);
-        fclose(file);
-    }
+		if (file)
+		{
+			ParseFalcon4Config(file);
+			fclose(file);
+		}
 
-    //JB 010104 Cobra 11/20/04
-    /*if (!g_bwoeir)
-    { g_bMLU = false;
-      g_bIFF = false;}*/
+		//JB 010104 Cobra 11/20/04
+		/*if (!g_bwoeir)
+		{ g_bMLU = false;
+		  g_bIFF = false;}*/
 
-    delete[] strDir;
-    delete[] strAppPath;
+		delete[] strDir;
+		delete[] strAppPath;
+	}
+	catch(std::bad_alloc &ba)
+	{
+		std::cout<<ba.what()<<std::endl;
+		if(NULL != strAppPath)
+			delete [] strAppPath;
+		if(NULL != strDir)
+			delete [] strDir;
+	}
+    
 }

@@ -414,7 +414,9 @@ public:
 
     void SetKeyFile(_TCHAR *fname)
     {
-        _tcscpy(keyfile, fname);
+		if(strlen(fname) > sizeof keyfile)
+			return;
+        _tcscpy_s(keyfile, sizeof(keyfile), fname);
     }
     _TCHAR *GetKeyfile(void)
     {

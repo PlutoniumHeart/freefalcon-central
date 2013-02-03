@@ -80,9 +80,9 @@ public:
 
     void EnableDay();
 
-    void SetDay(long dy)
+    void SetDay(long day)
     {
-        if (Day_) Day_->SetInteger(dy + 1);
+        if (Day_) Day_->SetInteger(day + 1);
     }
     void SetHour(long hr)
     {

@@ -555,7 +555,12 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     sprintf(FalconPictureDirectory, "%s\\Pictures", FalconDataDirectory);
 
     // Create PictureDir if not present
-    _mkdir(FalconPictureDirectory);
+	int retval = NULL;
+    retval = _mkdir(FalconPictureDirectory);
+	if(!retval)
+	{
+		MonoPrint("Failed to create Falcon Picture Directory!");
+	}
 
     // Test for CD stuff
     {
@@ -596,7 +601,10 @@ int PASCAL HandleWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 #ifdef __WATCOMC__
     chdir(FalconDataDirectory);
 #else
-    _chdir(FalconDataDirectory);
+    if(!_chdir(FalconDataDirectory))
+	{
+		MonoPrint("Failed to change Falcon Data Directory");
+	}
 #endif
     sprintf(fileName, "%s\\%s.ini", FalconObjectDataDir, "Falcon4");
 
@@ -1322,9 +1330,9 @@ void SystemLevelInit()
 
         if (((!_strnicmp(td->m_name, "Korea", 5)) || (!_strnicmp(td->m_name, "Eurowar", 7))) && (SimPathHandle == -1))
         {
-            char tmpPath[256];
-            sprintf(tmpPath, "%s\\sim", FalconDataDirectory); // JPO - so we can find raw sim files
-            SimPathHandle = ResAddPath(tmpPath, TRUE);
+            char tempPath[256];
+            sprintf(tempPath, "%s\\sim", FalconDataDirectory); // JPO - so we can find raw sim files
+            SimPathHandle = ResAddPath(tempPath, TRUE);
         }
 
         g_theaters.DoSoundSetup();
@@ -1527,18 +1535,21 @@ void CampaignAutoSave(FalconGameType gametype)
     {
         gCommsMgr->SaveStats();
 
-        if (FalconLocalGame->IsLocal())
-        {
-            TheCampaign.SetCreationIter(TheCampaign.GetCreationIter() + 1);
-            TheCampaign.SaveCampaign(gametype, gUI_AutoSaveName, 0);
+		if(FalconLocalGame != NULL)
+		{
+			if (FalconLocalGame->IsLocal())
+			{
+				TheCampaign.SetCreationIter(TheCampaign.GetCreationIter() + 1);
+				TheCampaign.SaveCampaign(gametype, gUI_AutoSaveName, 0);
 
-            if (gCommsMgr->Online())
-            {
-                // Send messages to remote players with new Iter Number
-                // So they can save their stats & update Iter in their campaign
-                gCommsMgr->UpdateGameIter();
-            }
-        }
+				if (gCommsMgr->Online())
+				{
+					// Send messages to remote players with new Iter Number
+					// So they can save their stats & update Iter in their campaign
+					gCommsMgr->UpdateGameIter();
+				}
+			}
+		}
     }
 }
 
@@ -1741,21 +1752,24 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
         case FM_REVERT_CAMPAIGN:
         {
-            int gametype = FalconLocalGame->GetGameType();
+			if(FalconLocalGame != NULL)
+			{
+				int gametype = FalconLocalGame->GetGameType();
 
-            // Game aborted - reload current campaign
-            strcpy(gUI_CampaignFile, TheCampaign.SaveFile);
-            SendMessage(hwnd, FM_SHUTDOWN_CAMPAIGN, 0, 0);
+				// Game aborted - reload current campaign
+				strcpy(gUI_CampaignFile, TheCampaign.SaveFile);
+				SendMessage(hwnd, FM_SHUTDOWN_CAMPAIGN, 0, 0);
 
-            // KCK: This is well and truely stupid
-            if (gametype == game_Campaign)
-            {
-                StartCampaignGame(1, gametype);
-            }
-            else if (gametype == game_TacticalEngagement)
-            {
-                tactical_restart_mission();
-            }
+				// KCK: This is well and truely stupid
+				if (gametype == game_Campaign)
+				{
+					StartCampaignGame(1, gametype);
+				}
+				else if (gametype == game_TacticalEngagement)
+				{
+					tactical_restart_mission();
+				}
+			}
 
             break;
         }
@@ -1916,7 +1930,7 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
                     MonoPrint("Got Scenario Stats.\n");
                     gCampJoinTries = 0;
 
-                    if (FalconLocalGame)
+                    if (FalconLocalGame != NULL)
                         CampaignPreloadSuccess(!FalconLocalGame->IsLocal());
 
                     if (gMainHandler) // Removed GameType check - RH

@@ -55,22 +55,34 @@ public:
     /** are we running IA? */
     bool RunningInstantAction() const
     {
-        return FalconLocalGame->GetGameType() == game_InstantAction;
+		if(FalconLocalGame != NULL)
+			return FalconLocalGame->GetGameType() == game_InstantAction;
+		else
+			return 0;
     }
     /** are we running DF? */
     bool RunningDogfight() const
     {
-        return FalconLocalGame->GetGameType() == game_Dogfight;
+		if(FalconLocalGame != NULL)
+			return FalconLocalGame->GetGameType() == game_Dogfight;
+		else
+			return 0;
     }
     /** are we running TE? */
     bool RunningTactical() const
     {
-        return FalconLocalGame->GetGameType() == game_TacticalEngagement;
+		if(FalconLocalGame != NULL)
+			return FalconLocalGame->GetGameType() == game_TacticalEngagement;
+		else
+			return 0;
     }
     /** are we running CA? */
     bool RunningCampaign() const
     {
-        return FalconLocalGame->GetGameType() == game_Campaign;
+		if(FalconLocalGame != NULL)
+			return FalconLocalGame->GetGameType() == game_Campaign;
+		else
+			return 0;
     }
     /** are we running TE or CA? */
     bool RunningCampaignOrTactical() const

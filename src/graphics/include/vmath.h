@@ -391,12 +391,12 @@ namespace D3DFrame
             m[2][0] = m[2][1] = m[2][3] = m[3][2] = 0.0f;
         }
 
-        inline void Translate(float dx, float dy, float dz)
+        inline void Translate(float dirx, float diry, float dirz)
         {
             InitIdentity();
-            m[3][0] = dx;
-            m[3][1] = dy;
-            m[3][2] = dz;
+            m[3][0] = dirx;
+            m[3][1] = diry;
+            m[3][2] = dirz;
         }
 
         void Translate(Vector v)
@@ -404,12 +404,12 @@ namespace D3DFrame
             Translate(v.x, v.y, v.z);
         }
 
-        inline void Scale(float dx, float dy, float dz)
+        inline void Scale(float dirx, float diry, float dirz)
         {
             InitIdentity();
-            m[0][0] = dx;
-            m[1][1] = dy;
-            m[2][2] = dz;
+            m[0][0] = dirx;
+            m[1][1] = diry;
+            m[2][2] = dirz;
         }
 
         void Scale(Vector v)

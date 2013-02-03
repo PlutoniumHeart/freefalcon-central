@@ -35,7 +35,9 @@ public:
 
     void SetName(char *filename)
     {
-        strcpy(SaveName_, filename);
+		if(strlen(filename) > sizeof SaveName_)
+			return;
+        strcpy_s(SaveName_, sizeof(SaveName_), filename);
     }
 
     void LoadStats();

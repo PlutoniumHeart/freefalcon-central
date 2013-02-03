@@ -78,7 +78,7 @@ VuEntity *VuRBIterator::GetNext()
     }
     else
     {
-        return ret;
+        return CurrEnt();
     }
     ret = CurrEnt();
 

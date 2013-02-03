@@ -41,10 +41,10 @@ public:
     };
 
     // Initialize an edge using a point and a direction (use instead of a constructor)
-    void SetupWithVector(float x, float y, float dx, float dy)
+    void SetupWithVector(float x, float y, float dirx, float diry)
     {
-        A = dy;
-        B = -dx;
+        A = diry;
+        B = -dirx;
         C = -(A * x + B * y);
     };
 

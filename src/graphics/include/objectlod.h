@@ -31,7 +31,8 @@ public:
     void Draw(void) const
     {
         ShiAssert(root);
-        root->Draw();
+		if(root)
+			root->Draw();
     };
     void ReferenceTexSet(DWORD TexSetNr = 0, DWORD TexSetMax = 1);
     void ReleaseTexSet(DWORD TexSetNr = 0, DWORD TexSetMax = 1);
