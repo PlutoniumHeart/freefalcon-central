@@ -1203,7 +1203,7 @@ string RemoveInvalidChars(const string &instr)
     int len = strlen(outstr.c_str());
 
     for (int i = 0; i < len; ++i)
-        if (isspace(*pos) || (invalid_chars.find(*pos) != string::npos))
+        if (isspace(static_cast<unsigned char>(*pos)) || (invalid_chars.find(*pos) != string::npos))
             outstr.erase(pos); // this increments pos
         else ++pos;
 
@@ -3835,6 +3835,7 @@ void CockpitManager::CreateHsiView(int idNum, FILE* pcockpitDataFile)
     int srccount = 0;
     RECT destination;
     RECT source;
+	source.bottom = source.left = source.right = source.top = 0;
     int transparencyType = 0;
     HsiInitStr hsiInitStr;
 
@@ -5505,7 +5506,7 @@ void CockpitManager::LoadCockpitDefaults(void)
     }
 
     // Load the MFD States
-    for (int i = 0; i < NUM_MFDS; i++)
+    for (i = 0; i < NUM_MFDS; i++)
     {
         // JPO ignore the old format in favour of newer stuff
         //THW 2003-11-14 reactivated to make it work
@@ -5562,7 +5563,7 @@ void CockpitManager::LoadCockpitDefaults(void)
         }
     }
 
-    for (int i = 0; i < MAX_PGMS - 1; i++)
+    for (i = 0; i < MAX_PGMS - 1; i++)
     {
         if (mpIcp)
         {

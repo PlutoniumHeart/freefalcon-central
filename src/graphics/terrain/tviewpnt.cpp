@@ -525,11 +525,11 @@ float TViewPoint::GetGroundLevel(float x, float y, Tpoint *normal, int *lod)
 float TViewPoint::GetGroundLevel(float x, float y, Tpoint *normal)
 #endif
 {
-    int LOD;
-    int row, col;
-    float x_pos, y_pos;
+    int LOD = 0;
+    int row = 0, col = 0;
+    float x_pos = 0.0, y_pos = 0.0;
     Tpost *p1, *p2, *p3;
-    float Nx, Ny, Nz;
+    float Nx = 0.0, Ny = 0.0, Nz = 0.0;
 
 
     // Compute the level post address of the point of interest
@@ -1012,7 +1012,7 @@ BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
                     // Check vertical edge we crossed
                     if (verticalEdgeTest(rowt, colt, xt, yt, zt, LOD))
                     {
-                        LineSquareIntersection(rowt, colt - stepRt, dir, intersection, LOD);
+                        LineSquareIntersection(rowt, colt - (int)stepRt, dir, intersection, LOD);
 
                         // Unlock the viewpoint
                         LeaveCriticalSection(&cs_update);
@@ -1025,7 +1025,7 @@ BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
                 // Check horizontal edge between (row,col) and (row,col+1)
                 if (horizontalEdgeTest(row, col, x, y, z, LOD))
                 {
-                    LineSquareIntersection(row - stepUp, col, dir, intersection, LOD);
+                    LineSquareIntersection(row - (int)stepUp, col, dir, intersection, LOD);
 
                     // Unlock the viewpoint
                     LeaveCriticalSection(&cs_update);
@@ -1078,7 +1078,7 @@ BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
                     // Check horizontal edge between we crossed
                     if (horizontalEdgeTest(rowt, colt, xt, yt, zt, LOD))
                     {
-                        LineSquareIntersection(rowt - stepUp, colt, dir, intersection, LOD);
+                        LineSquareIntersection(rowt - (int)stepUp, colt, dir, intersection, LOD);
 
                         // Unlock the viewpoint
                         LeaveCriticalSection(&cs_update);
@@ -1091,7 +1091,7 @@ BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
                 // Check vertical edge between (row,col) and (row+1,col)
                 if (verticalEdgeTest(row, col, x, y, z, LOD))
                 {
-                    LineSquareIntersection(row, col - stepRt, dir, intersection, LOD);
+                    LineSquareIntersection(row, col - (int)stepRt, dir, intersection, LOD);
 
                     // Unlock the viewpoint
                     LeaveCriticalSection(&cs_update);

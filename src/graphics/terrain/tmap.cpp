@@ -38,6 +38,8 @@ int TMap::Setup(const char *mapPath)
 
 
     // Construct the filename for the map description file and open it
+	if(strlen(mapPath) >= sizeof filename)
+		return(0);
     strcpy(filename, mapPath);
     strcat(filename, "\\Theater.map");
     headerFile = CreateFile_Open(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -330,6 +332,8 @@ void TMap::LoadMEAtable(const char *mapPath)
     ShiAssert(MEAarray);
 
     // Open the MEA data file
+	if(strlen(mapPath) >= sizeof filename)
+		return;
     strcpy(filename, mapPath);
     strcat(filename, "\\Theater.MEA");
     dataFile = CreateFile_Open(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);

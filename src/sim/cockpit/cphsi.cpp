@@ -101,7 +101,7 @@ void CPHsi::IncState(HSIButtonStates state, float step)
 {
 
     HSIValues valueIndex;
-    int normalState;
+    int normalState = 0;
 
     if (state == HSI_STA_CRS_STATE)
     {

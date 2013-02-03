@@ -21,7 +21,7 @@ CPMachAsi::CPMachAsi(ObjectInitStr *pobjectInitStr, MachAsiInitStr* pmachAsiInit
     mDialStartAngle = pmachAsiInitStr->dial_start_angle;
     mDialArcLength = pmachAsiInitStr->dial_arc_length;
     // sfr: use smaller scaling value here
-    mNeedleRadius = (int)(pmachAsiInitStr->needle_radius * (mHScale < mVScale) ? mHScale : mVScale);
+    mNeedleRadius = (int)(pmachAsiInitStr->needle_radius * ((mHScale < mVScale) ? mHScale : mVScale));
     mEndLength = pmachAsiInitStr->end_radius;
     mEndAngle                         = pmachAsiInitStr->end_angle;
 

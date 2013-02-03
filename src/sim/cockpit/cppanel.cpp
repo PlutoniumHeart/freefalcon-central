@@ -855,119 +855,120 @@ void CPPanel::SetTOD(float lightLevel)
 
     if (DisplayOptions.bRender2DCockpit)
     {
-        DWORD palette16[256];
-        DWORD *palTgt = palette16;
-        GLulong *palData = gpTemplatePalette;
-        GLulong *palEnd = palData + 208; // Entries 208 through 255 are special...
+		// Same name used in outer scope!!
+        DWORD palette16_1[256];
+        DWORD *palTgt_1 = palette16_1;
+        GLulong *palData_1 = gpTemplatePalette;
+        GLulong *palEnd_1 = palData_1 + 208; // Entries 208 through 255 are special...
 
-        DWORD lighting;
-        DWORD inColor;
-        DWORD outColor;
-        int i;
-        DWORD mask;
-        BYTE red, green, blue;
+        DWORD lighting_1;
+        DWORD inColor_1;
+        DWORD outColor_1;
+        int i_1 = 0;
+        DWORD mask_1 = 0;
+        BYTE red_1, green_1, blue_1;
 
         // Just copy the chromakey color without lighting it
-        *palTgt++ = *palData++;
+        *palTgt_1++ = *palData_1++;
 
         // Now walk the palette and create a 32 bit lit version
         if (OTWDriver.renderer->GetGreenMode())
         {
             // Convert from floating point to a 16.16 fixed point representation
-            lighting = FloatToInt32(lightLevel * 65536.0f);
+            lighting_1 = FloatToInt32(lightLevel * 65536.0f);
 
             // Use only green
-            mask = 0xFF00FF00;
+            mask_1 = 0xFF00FF00;
 
             // Light the palette entries and convert to 16 bit colors
             do
             {
-                inColor = *palData;
+                inColor_1 = *palData_1;
 
-                outColor  = ((((inColor)     & 0xFF) * lighting) >> 16);
-                outColor |= ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
-                outColor |= ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
+                outColor_1  = ((((inColor_1)     & 0xFF) * lighting_1) >> 16);
+                outColor_1 |= ((((inColor_1 >> 8)  & 0xFF) * lighting_1) >> 8) & 0x0000FF00;
+                outColor_1 |= ((((inColor_1 >> 16) & 0xFF) * lighting_1))      & 0x00FF0000;
 
-                blue = (BYTE)(((outColor) >> 16) & 0xFF);
-                green = (BYTE)(((outColor) >> 8)  & 0xFF);
-                red = (BYTE)((outColor)     & 0xFF);
-                outColor = (((BYTE)(0.299F * red + 0.587F * green + 0.114 * blue)) & 0xFF) << 8;
-                outColor |= 0xff000000; // OW add alpha
+                blue_1 = (BYTE)(((outColor_1) >> 16) & 0xFF);
+                green_1 = (BYTE)(((outColor_1) >> 8)  & 0xFF);
+                red_1 = (BYTE)((outColor_1)     & 0xFF);
+                outColor_1 = (((BYTE)(0.299F * red_1 + 0.587F * green_1 + 0.114 * blue_1)) & 0xFF) << 8;
+                outColor_1 |= 0xff000000; // OW add alpha
 
-                *palTgt = outColor;
+                *palTgt_1 = outColor_1;
 
-                palData++;
-                palTgt++;
+                palData_1++;
+                palTgt_1++;
             }
-            while (palData < palEnd);
+            while (palData_1 < palEnd_1);
 
             // Entries 208 through 255 are special (unlit)
-            palEnd += (256 - 208);
+            palEnd_1 += (256 - 208);
 
             do
             {
-                blue = (BYTE)(((*palData) >> 16) & 0xFF);
-                green = (BYTE)(((*palData) >> 8)  & 0xFF);
-                red = (BYTE)((*palData)        & 0xFF);
-                outColor = ((int)(0.299F * red + 0.587F * green + 0.114 * blue) & 0xFF) << 8;
-                outColor |= 0xff000000; // OW add alpha
+                blue_1 = (BYTE)(((*palData_1) >> 16) & 0xFF);
+                green_1 = (BYTE)(((*palData_1) >> 8)  & 0xFF);
+                red_1 = (BYTE)((*palData_1)        & 0xFF);
+                outColor_1 = ((int)(0.299F * red_1 + 0.587F * green_1 + 0.114 * blue_1) & 0xFF) << 8;
+                outColor_1 |= 0xff000000; // OW add alpha
 
                 if (!gpTemplateSurface)
-                    *palTgt = TemplateInfo->Pixel32toPixel32(outColor);
+                    *palTgt_1 = TemplateInfo->Pixel32toPixel32(outColor_1);
                 else
-                    *palTgt = gpTemplateSurface->Pixel32toPixel32(outColor);
+                    *palTgt_1 = gpTemplateSurface->Pixel32toPixel32(outColor_1);
 
-                palData++;
-                palTgt++;
+                palData_1++;
+                palTgt_1++;
             }
-            while (palData < palEnd);
+            while (palData_1 < palEnd_1);
         }
 
         else
         {
             // Convert from floating point to a 16.16 fixed point representation
-            lighting = FloatToInt32(lightLevel * 65536.0f);
+            lighting_1 = FloatToInt32(lightLevel * 65536.0f);
 
             // Use full color
-            mask = 0xFFFFFFFF;
+            mask_1 = 0xFFFFFFFF;
 
             // Light the palette entries and convert to 16 bit colors
             do
             {
-                inColor = *palData;
+                inColor_1 = *palData_1;
 
-                outColor  = ((((inColor)     & 0xFF) * lighting) >> 16);
-                outColor |= ((((inColor >> 8)  & 0xFF) * lighting) >> 8) & 0x0000FF00;
-                outColor |= ((((inColor >> 16) & 0xFF) * lighting))      & 0x00FF0000;
-                outColor |= 0xff000000; // OW add alpha
+                outColor_1  = ((((inColor_1)     & 0xFF) * lighting_1) >> 16);
+                outColor_1 |= ((((inColor_1 >> 8)  & 0xFF) * lighting_1) >> 8) & 0x0000FF00;
+                outColor_1 |= ((((inColor_1 >> 16) & 0xFF) * lighting_1))      & 0x00FF0000;
+                outColor_1 |= 0xff000000; // OW add alpha
 
-                *palTgt = outColor & mask;
+                *palTgt_1 = outColor_1 & mask_1;
 
-                palData++;
-                palTgt++;
+                palData_1++;
+                palTgt_1++;
             }
-            while (palData < palEnd);
+            while (palData_1 < palEnd_1);
 
             // Entries 208 through 255 are special (unlit)
-            palEnd += (256 - 208);
+            palEnd_1 += (256 - 208);
 
             do
             {
-                *palTgt = *palData & mask;
-                palData++;
-                palTgt++;
+                *palTgt_1 = *palData_1 & mask_1;
+                palData_1++;
+                palTgt_1++;
             }
-            while (palData < palEnd);
+            while (palData_1 < palEnd_1);
         }
 
         for (i = mNumSurfaces - 1; i >= 0; i--)
-            mpSurfaceData[i].psurface->Translate3D(palette16);
+            mpSurfaceData[i].psurface->Translate3D(palette16_1);
 
         for (i = 0; i < mNumObjects; i++)
-            mpObjects[i]->Translate3D(palette16);
+            mpObjects[i]->Translate3D(palette16_1);
 
         for (i = 0; i < mNumButtonViews; i++) //Wombat778 3-23-04  Added for rendered buttonviews (buttonviews arent objects)
-            mpButtonViews[i]->Translate3D(palette16);
+            mpButtonViews[i]->Translate3D(palette16_1);
 
     }
 
