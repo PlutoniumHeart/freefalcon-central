@@ -199,7 +199,7 @@ int UI_RequestAircraftSlot::EmptyFlightSlot(Flight flight)
     MonoPrint("Empty Flight Slot %08x From %d To %d\n", flight, dataBlock.current_pilot_slot, dataBlock.requested_slot);
 
     // This player is currently assigned to an aircraft in this flight - unassign first
-    if (dataBlock.requested_slot < 255)
+    if (dataBlock.requested_slot < 4)
     {
         if (flight->player_slots[dataBlock.requested_slot])
         {
