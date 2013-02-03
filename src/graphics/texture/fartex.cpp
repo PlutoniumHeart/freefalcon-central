@@ -812,7 +812,7 @@ bool FarTexDB::SyncDDSTextures(bool bForce)
 
         fwrite(pBuf, 1, ddsd.dwLinearSize, fpRaw);
 
-        delete pBuf;
+        delete [] pBuf;
         fclose(fpDDS);
         DeleteFile(szDDSName);
     }

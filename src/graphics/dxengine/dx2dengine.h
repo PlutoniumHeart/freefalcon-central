@@ -43,7 +43,7 @@ public:
     CTextureSurface(void)
     {
         Next = NULL;
-        FileName[0] = 0;
+        FileName[0] = '\0';
         ItemList = NULL;
     }
     CTextureSurface *Next;

@@ -490,7 +490,7 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
             // encode and clear dirty to send message
             bufptr = buffer;
             long bufSize = static_cast<long>(current->EncodeDirty(&bufptr));
-            CampDirtyData *campDirtyMsg;
+            CampDirtyData *campDirtyMsg = NULL;
             campDirtyMsg = new CampDirtyData(current->Id(), FalconLocalGame, FALSE);
             campDirtyMsg->dataBlock.size = static_cast<int>(bufSize);
             campDirtyMsg->dataBlock.data = new VU_BYTE[bufSize];
@@ -576,7 +576,7 @@ void FalconEntity::DoSimDirtyData(VU_TIME realTime)
 
             // encode and clear dirtyness to send dirty message
             long bufSize = static_cast<long>(current->EncodeDirty(&bufptr));
-            SimDirtyData *simDirtyData;
+            SimDirtyData *simDirtyData = NULL;
             simDirtyData = new SimDirtyData(current->Id(), FalconLocalGame, FALSE);
             simDirtyData->dataBlock.size = static_cast<int>(bufSize);
             simDirtyData->dataBlock.data = new VU_BYTE[bufSize];

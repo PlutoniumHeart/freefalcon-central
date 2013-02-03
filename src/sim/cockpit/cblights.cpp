@@ -586,7 +586,7 @@ void CheckCaution2(void  *pObject,
     stateSysB = faultSys->GetFault(subsystem1);
     stateSysA = faultSys->GetFault(subsystem2);
 
-    pCPLight->mState = stateSysB * 2 + stateSysA;
+    pCPLight->mState = (int)stateSysB * 2 + (int)stateSysA;
     // }
 }
 

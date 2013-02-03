@@ -781,21 +781,21 @@ bool TextureHandle::Create(char *strName, UInt32 info, UInt16 bits, UInt16 width
 
         if (m_pDDS)
         {
-            DDSURFACEDESC2 ddsd;
-            ZeroMemory(&ddsd, sizeof(ddsd));
-            ddsd.dwSize = sizeof(ddsd);
-            HRESULT hr = m_pDDS->GetSurfaceDesc(&ddsd);
-            ShiAssert(SUCCEEDED(hr));
+            DDSURFACEDESC2 ddsd_1;
+            ZeroMemory(&ddsd_1, sizeof(ddsd_1));
+            ddsd_1.dwSize = sizeof(ddsd_1);
+            HRESULT hr_1 = m_pDDS->GetSurfaceDesc(&ddsd_1);
+            ShiAssert(SUCCEEDED(hr_1));
 
 #ifdef DEBUG_TEXTURE
             MonoPrint("Texture: %s [%s] created in %s memory\n",
                       strName, arrSurfFmt2String[m_eSurfFmt],
-                      ddsd.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
-                      (ddsd.ddsCaps.dwCaps & DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"));
+                      ddsd_1.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY  ? "SYSTEM" :
+                      (ddsd_1.ddsCaps.dwCaps & DDSCAPS_LOCALVIDMEM ? "VIDEO" : "AGP"));
 #endif
 
-            if (ddsd.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY)
-                InterlockedExchangeAdd((long *)&m_dwTotalBytes, ddsd.lPitch * ddsd.dwHeight);
+            if (ddsd_1.ddsCaps.dwCaps & DDSCAPS_SYSTEMMEMORY)
+                InterlockedExchangeAdd((long *)&m_dwTotalBytes, ddsd_1.lPitch * ddsd_1.dwHeight);
         }
 
 #endif
@@ -1839,10 +1839,10 @@ bool Texture::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions, D
 
 bool Texture::DumpImageToFile(char *szFile, int palID)
 {
-    BYTE *pSrc, *pDst;
+    BYTE *pSrc = NULL, *pDst = NULL;
     char szFileName[256];
     BOOL /*bSave,*/bChroma = FALSE;
-    DWORD *pal, dwSize, dwTmp, i, n;
+    DWORD *pal = NULL, dwSize = 0, dwTmp = 0, i = 0, n = 0;
 
     ShiAssert(this->imageData);
     ShiAssert(this->palette);

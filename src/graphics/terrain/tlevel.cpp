@@ -479,7 +479,7 @@ void TLevel::PreProcessBlock(LoaderQ* request)
         // MemFreeFS( postArray );
         MemFreePtr(postArray);
 #else
-        delete postArray;
+        delete [] postArray;
 #endif
         postArray = NULL;
 

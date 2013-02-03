@@ -62,8 +62,8 @@ BOOL TextureDB::Setup(DXContext *hrc, const char* path)
     HANDLE listFile;
     BOOL result;
     DWORD bytesRead;
-    int dataSize;
-    int i, j;
+    int dataSize = 0;
+    int i = 0, j = 0;
 
 
     ShiAssert(hrc);
@@ -1241,12 +1241,12 @@ bool TextureDB::SyncDDSTextures(bool bForce)
 
 bool TextureDB::DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool bForce)
 {
-    DWORD dwSize, *pal, dwTmp, n, i;
-    BYTE *pSrc, *pDst;
+    DWORD dwSize = 0, *pal = NULL, dwTmp = 0, n = 0, i = 0;
+    BYTE *pSrc = NULL, *pDst = NULL;
     char szFileName[256], szTemp[256], szKludge[256];
     char sep[] = ".";
-    char *token;
-    FILE *fp;
+    char *token = NULL;
+    FILE *fp = NULL;
 
     ShiAssert(pTile->bits[res]);
     ShiAssert(palette);

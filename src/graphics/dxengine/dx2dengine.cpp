@@ -2204,6 +2204,7 @@ void CDXEngine::FlushBlips(void)
 
                 default :
                         char s[128];
+						s[0] = '\0';
                     printf(s, "Corrupted Model ID : %d !!!", LodID);
                     MessageBox(NULL, s, "DX Engine", NULL);
             }

@@ -420,9 +420,10 @@ PaletteHandle::PaletteHandle(IDirectDraw7 *pDD, UInt16 PalBitsPerEntry, UInt16 P
 {
     DWORD dwFlags = DDPCAPS_8BIT;
 
-    if (PalNumEntries == 0x100) dwFlags |= DDPCAPS_ALLOW256;
+    if (PalNumEntries == 0x100) 
+		dwFlags |= DDPCAPS_ALLOW256;
 
-    DWORD pal[256];
+	DWORD* pal = new DWORD[PalNumEntries];
     ZeroMemory(pal, sizeof(DWORD) * PalNumEntries);
 
     HRESULT hr = 0;
@@ -437,6 +438,7 @@ PaletteHandle::PaletteHandle(IDirectDraw7 *pDD, UInt16 PalBitsPerEntry, UInt16 P
 
     m_pPalData = new DWORD[256];
     ShiAssert(m_pPalData);
+	//delete [] pal; //should I delete this or not?
 
 #ifdef _DEBUG
     InterlockedIncrement((long *) &m_dwNumHandles); // Number of instances

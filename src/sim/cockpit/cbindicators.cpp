@@ -61,10 +61,10 @@ void CBEFuelFlow(void * pObject)
 {
 
     CPIndicator* pCPIndicator;
-    long flowRate;
+    long flowRate = 0;
     char digitString[FUEL_FLOW_DIGITS + 1];
-    int i, j;
-    int            len;
+    int i = 0, j = 0;
+    int len = 0;
 
     pCPIndicator = (CPIndicator*) pObject;
     flowRate = (long)((AircraftClass *)pCPIndicator->mpOwnship)->af->FuelFlow();
@@ -78,7 +78,7 @@ void CBEFuelFlow(void * pObject)
     }
     else
     {
-        _ltoa(flowRate, digitString, 10);
+        _ltoa_s(flowRate, digitString, sizeof(digitString), 10);
 
         len = (int) strlen(digitString);
         memset(pCPIndicator->mpTapeValues, 0, pCPIndicator->mNumTapes * sizeof(float));
@@ -134,7 +134,7 @@ void CBEAltInd(void * pObject)
     }
     else
     {
-        _ltoa(altitude, digitString, 10);
+        _ltoa_s(altitude, digitString, sizeof(digitString), 10);
 
         len = (int) strlen(digitString);
         memset(pCPIndicator->mpTapeValues, 0, pCPIndicator->mNumTapes * sizeof(float));
@@ -264,7 +264,7 @@ void CBERoundsRemaining(void * pObject)
     }
     else
     {
-        _ltoa(rounds, digitString, 10);
+        _ltoa_s(rounds, digitString, sizeof(digitString), 10);
 
         len = (int) strlen(digitString);
         memset(pCPIndicator->mpTapeValues, 0, pCPIndicator->mNumTapes * sizeof(float));

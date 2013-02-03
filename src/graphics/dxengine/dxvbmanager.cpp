@@ -544,7 +544,8 @@ void CDXVbManager::ReleaseModel(DWORD ID)
         return;
 
     // Exit if not a valid model
-    if (!pVBuffers[ID].Valid) return;
+    if (!pVBuffers[ID].Valid) 
+		return;
 
     // Enter the Critical section
     LOCK_VB_MANAGER; // FRB

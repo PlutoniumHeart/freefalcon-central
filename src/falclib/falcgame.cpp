@@ -230,7 +230,9 @@ long FalconGameEntity::CheckPassword(_TCHAR *passwd)
 {
     _TCHAR buffer[RUL_PW_LEN];
     memset(buffer, 0, sizeof(_TCHAR)*RUL_PW_LEN);
-    _tcscpy(buffer, passwd);
+	if(strlen(passwd) > sizeof buffer)
+		return FALSE;
+    _tcscpy_s(buffer, sizeof(buffer), passwd);
     EncipherPassword((char*)buffer, sizeof(_TCHAR)*RUL_PW_LEN);
 
     if (memcmp(buffer, rules.Password, sizeof(_TCHAR)*RUL_PW_LEN))

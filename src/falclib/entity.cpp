@@ -1730,8 +1730,8 @@ DWORD MapVisId(DWORD visId)
 
 void LoadRackTables()
 {
-    FILE *fp;
-    int ngrp;
+    FILE *fp = NULL;
+    int ngrp = 0;
     char buffer[MAX_PATH];
 
     if ((fp = OpenCampFile("Rack", "dat", "rt")) == NULL)

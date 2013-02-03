@@ -2341,11 +2341,11 @@ void OTWDriverClass::SetmpPadlockPriorityObject(SimBaseClass* newObject)
         if (mpPadlockPriorityObject && mpPadlockPriorityObject->IsSim() &&
             (otwPlatform.get() !=  mpPadlockPriorityObject) && !mpPadlockPriorityObject->IsWeapon())
         {
-#ifdef DEBUG
-            //simObjectPtr = new SimObjectType (OBJ_TAG, NULL, mpPadlockPriorityObject);
-#else
+//#ifdef DEBUG
+//            //simObjectPtr = new SimObjectType (OBJ_TAG, NULL, mpPadlockPriorityObject);
+//#else
             simObjectPtr = new SimObjectType(newObject);
-#endif
+//#endif
 
             // And assign it and reference it
             mfdVirtualDisplay = (Render2D*)simObjectPtr;

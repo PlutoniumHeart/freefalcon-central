@@ -43,11 +43,11 @@ FalconSessionEntity::FalconSessionEntity(ulong domainMask, char *callsign) : VuS
     //name = new _TCHAR[_NAME_LEN_];
     //_stprintf(name,"Kevin");
     _stprintf(name, LogBook.NameWRank());
-    name[_NAME_LEN_] = 0;
+    name[_NAME_LEN_] = '\0';
     //callSign = new _TCHAR[_CALLSIGN_LEN_];
     //_stprintf(callSign,"DeathPup");
     _stprintf(callSign, LogBook.Callsign());
-    callSign[_CALLSIGN_LEN_] = 0;
+    callSign[_CALLSIGN_LEN_] = '\0';
     playerSquadron = FalconNullId;
     playerFlight = FalconNullId;
     playerEntity = FalconNullId;
@@ -345,7 +345,9 @@ void FalconSessionEntity::SetPlayerName(_TCHAR* pname)
     /*if (name)
       delete name;
       name = new _TCHAR[_tcslen(pname)+1];*/
-    _tcscpy(name, pname);
+	if(strlen(pname) > sizeof name)
+		return;
+    _tcscpy_s(name, sizeof(name), pname);
     name[_NAME_LEN_] = 0;
 
     if (gUICommsQ && Game())
@@ -362,7 +364,9 @@ void FalconSessionEntity::SetPlayerCallsign(_TCHAR* pcallsign)
     //if (callSign)
     // delete callSign;
     //callSign = new _TCHAR[_tcslen(pcallsign)+1];
-    _tcscpy(callSign, pcallsign);
+	if(strlen(pcallsign) > sizeof callSign)
+		return;
+    _tcscpy_s(callSign, sizeof(callSign), pcallsign);
     callSign[_CALLSIGN_LEN_] = 0;
 
     if (gUICommsQ && Game())
