@@ -552,7 +552,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
                 while (pStack + 1 <= pStackTop)
                 {
                     if ((Count % StackColumns) == 0)
-                        output += wsprintf(output, "%08x: ", pStack);
+                        output += wsprintf(output, "%08x: ", *pStack);
 
                     char *Suffix = " ";
 

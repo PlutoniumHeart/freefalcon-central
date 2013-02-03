@@ -8212,7 +8212,7 @@ char * res_fullpath(char * abs_buffer, const char * rel_buffer, int maxlen)
         rel += 2;
 
         if (*rel == ASCII_BACKSLASH)
-            *rel++;
+            (*rel) = (*rel) + 1;
     }
 
     len = strlen(current_path) - 2;

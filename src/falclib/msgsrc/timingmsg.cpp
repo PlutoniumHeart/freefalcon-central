@@ -109,10 +109,12 @@ int FalconTimingMessage::Decode(VU_BYTE **buf, long *rem)
             }
             else
             {
-                for (int i = numberofstats; i >= 0; i--)
+                for (int i = numberofstats-1; i >= 0; i--)
                 {
-                    if (i == 0) delta[i] = vuxTargetGameTime - dataBlock.targetTime;
-                    else if (i > 0) delta[i] = delta[i - 1];
+                    if (i == 0) 
+						delta[i] = vuxTargetGameTime - dataBlock.targetTime;
+                    else if (i > 0) 
+						delta[i] = delta[i - 1];
 
                     totaltimediff += delta[i];
                 }

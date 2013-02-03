@@ -475,5 +475,5 @@ GameAxisSetup_t AxisSetup[AXIS_MAX] =
     { &AxisMap.HudBrt.Device, &AxisMap.HudBrt.Axis, 0, &AxisMap.HudBrt.Saturation, true},
     { &AxisMap.RetDepr.Device, &AxisMap.RetDepr.Axis, 0, &AxisMap.RetDepr.Saturation, true},
     { &AxisMap.Zoom.Device, &AxisMap.Zoom.Axis, 0, &AxisMap.Zoom.Saturation, true},
-    { &AxisMap.InterComVol.Device, &AxisMap.InterComVol.Axis, 0, &AxisMap.InterComVol.Saturation, true},
+    //{ &AxisMap.InterComVol.Device, &AxisMap.InterComVol.Axis, 0, &AxisMap.InterComVol.Saturation, true},
 };
