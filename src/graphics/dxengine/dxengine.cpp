@@ -1286,7 +1286,7 @@ void CDXEngine::DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const
     D3DXMATRIX Scale, State;
     D3DVECTOR p;
     bool Visible = false;
-    DWORD Liter;
+    DWORD Liter = 0;
     DxDbHeader *Model;
 
 #ifdef DEBUG_LOD_ID

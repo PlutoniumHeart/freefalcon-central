@@ -69,7 +69,8 @@ GLint CFileMemory::glReadMem(void *target, GLint total)
 {
     ShiAssert(buffer);
 
-    if (total >= bytesLeft) total = bytesLeft;
+    if (total >= bytesLeft) 
+		total = bytesLeft;
 
     memcpy(target, CurrentMemoryPointer, total);
     CurrentMemoryPointer += total;

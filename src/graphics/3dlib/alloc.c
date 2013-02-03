@@ -32,13 +32,18 @@ alloc_handle_t *AllocInit(void)
     alloc_hdr_t *hdr;
     alloc_block_t *blk;
     blk = (alloc_block_t *)malloc(sizeof(alloc_block_t));
-    blk->next = 0UL;
-    blk->start = (char *)malloc(ALLOC_BLOCK_SIZE + ALIGN_BYTES - 1);
-    blk->free = AllocSetToAlignment(blk->start);
-    blk->end = blk->start + ALLOC_BLOCK_SIZE;
+	if(blk)
+	{
+		blk->next = 0UL;
+		blk->start = (char *)malloc(ALLOC_BLOCK_SIZE + ALIGN_BYTES - 1);
+		blk->free = AllocSetToAlignment(blk->start);
+		blk->end = blk->start + ALLOC_BLOCK_SIZE;
+	}
     hdr = (alloc_hdr_t *)malloc(sizeof(alloc_hdr_t));
-    hdr->first =
-        hdr->curr = blk;
+	if(hdr)
+	{
+		hdr->first = hdr->curr = blk;
+	}
     root = hdr;
     return(alloc_handle_t *)root;
 }
@@ -71,8 +76,11 @@ char *Alloc(int size)
         else
         {
             blk->next = (alloc_block_t *)malloc(sizeof(alloc_block_t));
-            blk = blk->next;
-            blk->next = 0UL;
+			if(blk->next)
+			{
+				blk = blk->next;
+				blk->next = 0UL;
+			}
             blk->start = (char *)malloc(ALLOC_BLOCK_SIZE + ALIGN_BYTES - 1);
             blk->end = blk->start + ALLOC_BLOCK_SIZE;
             blk->free = AllocSetToAlignment(blk->start);

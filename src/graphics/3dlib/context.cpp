@@ -2058,6 +2058,8 @@ void ContextMPR::RestoreState(GLint state)
 {
     ShiAssert(state != -1);
     ShiAssert(state >= 0 && state < MAXIMUM_MPR_STATE);
+	if(state < 0 || state >= MAXIMUM_MPR_STATE)
+		return;
 
 #if defined _DEBUG && defined _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT_REPLACE
 
@@ -2646,12 +2648,12 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
 
 void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdxPtr, int *IIdxPtr, Ptexcoord *uv, bool bUseFGColor)
 {
-    float *I;
-    Spoint *xyz;
-    Pcolor *rgba;
-    TLVERTEX *pVtx;
-    TLVERTEX *sVertex;
-    SPolygon *sPolygon;
+    float *I = NULL;
+    Spoint *xyz = NULL;
+    Pcolor *rgba = NULL;
+    TLVERTEX *pVtx = NULL;
+    TLVERTEX *sVertex = NULL;
+    SPolygon *sPolygon = NULL;
     float PolyZAvg = 0;
 
     // Incoming type is always MPR_PRM_TRIFAN
@@ -2711,26 +2713,28 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
 
             xyz  = &TheStateStack.XformedPosPool[*xyzIdxPtr++];
 
+			if(xyz)
+			{
+				if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
+				{
+					pVtx->sx = xyz->x - 0.5f;
+					pVtx->sy = xyz->y - 0.5f;
+				}
+				else
+				{
+					pVtx->sx = xyz->x;
+					pVtx->sy = xyz->y;
+				}
 
-            if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
-            {
-                pVtx->sx = xyz->x - 0.5f;
-                pVtx->sy = xyz->y - 0.5f;
-            }
-            else
-            {
-                pVtx->sx = xyz->x;
-                pVtx->sy = xyz->y;
-            }
+				// NOTE: HACK!!
+				if (xyz->z > 5)
+					pVtx->sz = SCALE_SZ(xyz->z); // COBRA - RED - Using precomputed CXs
+				else
+					pVtx->sz = 0.f;
 
-            // NOTE: HACK!!
-            if (xyz->z > 5)
-                pVtx->sz = SCALE_SZ(xyz->z); // COBRA - RED - Using precomputed CXs
-            else
-                pVtx->sz = 0.f;
-
-            pVtx->rhw = 1.f / xyz->z;
-            pVtx->specular = m_colFOG;
+				pVtx->rhw = 1.f / xyz->z;
+				pVtx->specular = m_colFOG;
+			}
 
             // End Mission box
             if (texID > 25 && texID < 32)
@@ -2774,7 +2778,8 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
             if (opFlag & PRIM_COLOP_COLOR)
             {
                 ShiAssert(rgbaIdxPtr);
-                rgba = &TheColorBank.ColorPool[*rgbaIdxPtr++];
+				if(rgbaIdxPtr && TheColorBank.ColorPool)
+					rgba = &TheColorBank.ColorPool[*rgbaIdxPtr++];
 
                 ShiAssert(rgba);
 
@@ -2784,7 +2789,8 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                     {
                         ShiAssert(IIdxPtr);
                         I = &TheStateStack.IntensityPool[*IIdxPtr++];
-                        pVtx->color = D3DRGBA(rgba->r * *I, rgba->g * *I, rgba->b * *I, rgba->a);
+						if(I)
+							pVtx->color = D3DRGBA(rgba->r * *I, rgba->g * *I, rgba->b * *I, rgba->a);
                     }
 
                     else
@@ -3008,6 +3014,8 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
 void ContextMPR::Draw2DPoint(Tpoint *v0)
 {
     ShiAssert(v0);
+	if(!v0)
+		return;
 
     // COUNT_PROFILE("BSP POINTS");
 
@@ -3138,6 +3146,8 @@ void ContextMPR::Draw2DPoint(float x, float y)
 void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
 {
     ShiAssert(v0 && v1);
+	if(v0 == NULL || v1 == NULL)
+		return;
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::Draw2DLine(0x%X,0x%X)\n", v0, v1);
@@ -3150,7 +3160,7 @@ void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
 #endif
 
     // Lock VB
-    TLVERTEX *pVtx;
+    TLVERTEX *pVtx = NULL;
 
     if (!LockVB(2, (void **)&m_pTLVtx))
     {
@@ -3328,6 +3338,8 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
 void ContextMPR::DrawPrimitive2D(int type, int nVerts, int *xyzIdxPtr)
 {
     ShiAssert(xyzIdxPtr);
+	if(xyzIdxPtr == NULL)
+		return;
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPrimitive2D(%d,%d,0x%X)\n", type, nVerts, xyzIdxPtr);
@@ -3359,6 +3371,8 @@ void ContextMPR::DrawPrimitive2D(int type, int nVerts, int *xyzIdxPtr)
     for (int i = 0; i < nVerts; i++)
     {
         ShiAssert(*xyzIdxPtr < MAX_VERT_POOL_SIZE);
+		if(*xyzIdxPtr >= MAX_VERT_POOL_SIZE)
+			return;
         xyz = &TheStateStack.XformedPosPool[*xyzIdxPtr++];
 
         // Check for overrun

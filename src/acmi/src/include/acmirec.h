@@ -109,7 +109,7 @@ typedef struct
 {
     long    intTime;
     _TCHAR timeStr[20];
-    _TCHAR msgStr[100];
+    _TCHAR msgStr[128];
 } ACMITextEvent;
 #pragma pack (pop, pack1)
 

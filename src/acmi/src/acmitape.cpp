@@ -7,6 +7,8 @@
 #include <string.h>
 #include <direct.h>
 #include <tchar.h>
+#include <iostream>
+#include <new>
 
 #include "Graphics/Include/Setup.h"
 #include "Graphics/Include/drawsgmt.h"
@@ -1059,14 +1061,14 @@ void ACMITape::ParseEntities(void)
     count = 0;
 
     LIST
-    *entityPtr,
-    *rawList;
+    *entityPtr = NULL,
+    *rawList = NULL;
 
     ACMIRawPositionData
-    *entityType;
+    *entityType = NULL;
 
     ACMIEntityData
-    *importEntityInfo;
+    *importEntityInfo = NULL;
 
     importEntityList = NULL;
 
@@ -1081,6 +1083,8 @@ void ACMITape::ParseEntities(void)
         {
             // look for existing entity
             entityPtr = importFeatList;
+			if(!entityPtr)
+				return;
 
             for (i = 0; i < importNumFeat; i++)
             {
@@ -1093,6 +1097,8 @@ void ACMITape::ParseEntities(void)
                 }
 
                 entityPtr = entityPtr->next;
+				if(!entityPtr)
+					return;
             }
 
             // create new import entity record
@@ -1118,6 +1124,8 @@ void ACMITape::ParseEntities(void)
 
             // look for existing entity
             entityPtr = importEntityList;
+			if(!entityPtr)
+				return;
 
             for (i = 0; i < importNumEnt; i++)
             {
@@ -1130,6 +1138,8 @@ void ACMITape::ParseEntities(void)
                 }
 
                 entityPtr = entityPtr->next;
+				if(!entityPtr)
+					return;
             }
 
             // create new import entity record
@@ -1711,7 +1721,7 @@ BOOL ACMITape::GetEntityPosition
     float
     deltaTime;
 
-    float dx, dy, dz;
+    float dirx, diry, dirz;
     float dx1, dy1, dz1;
 
     ACMIEntityPositionData
@@ -1760,9 +1770,9 @@ BOOL ACMITape::GetEntityPosition
         F4Assert(pos1->time <= _simTime);
         F4Assert(pos2->time > _simTime);
 
-        dx = pos2->posData.x - pos1->posData.x;
-        dy = pos2->posData.y - pos1->posData.y;
-        dz = pos2->posData.z - pos1->posData.z;
+        dirx = pos2->posData.x - pos1->posData.x;
+        diry = pos2->posData.y - pos1->posData.y;
+        dirz = pos2->posData.z - pos1->posData.z;
 
         // Interpolate.
         deltaTime =
@@ -1773,17 +1783,17 @@ BOOL ACMITape::GetEntityPosition
 
         x =
             (
-                pos1->posData.x + dx * deltaTime
+                pos1->posData.x + dirx * deltaTime
             );
 
         y =
             (
-                pos1->posData.y + dy * deltaTime
+                pos1->posData.y + diry * deltaTime
             );
 
         z =
             (
-                pos1->posData.z + dz * deltaTime
+                pos1->posData.z + dirz * deltaTime
             );
 
         yaw = AngleInterp(pos1->posData.yaw, pos2->posData.yaw, deltaTime);
@@ -1791,7 +1801,7 @@ BOOL ACMITape::GetEntityPosition
         roll = AngleInterp(pos1->posData.roll, pos2->posData.roll, deltaTime);
 
         // get the average speed
-        speed = (float)sqrt(dx * dx + dy * dy + dz * dz) / (pos2->time - pos1->time);
+        speed = (float)sqrt(dirx * dirx + diry * diry + dirz * dirz) / (pos2->time - pos1->time);
         float dAng = pos2->posData.yaw - pos1->posData.yaw;
 
         if (fabs(dAng) > 180.0f * DTR)
@@ -1810,8 +1820,8 @@ BOOL ACMITape::GetEntityPosition
             dz1 = pos1->posData.z - pos3->posData.z;
 
             // Turn rate = solid angle delta between velocity vectors
-            turnrate = (float)acos((dx * dx1 + dy * dy1 + dz * dz1) /
-                                   (float)sqrt((dx * dx + dy * dy + dz * dz) * (dx1 * dx1 + dy1 * dy1 + dz1 * dz1)));
+            turnrate = (float)acos((dirx * dx1 + diry * dy1 + dirz * dz1) /
+                                   (float)sqrt((dirx * dirx + diry * diry + dirz * dirz) * (dx1 * dx1 + dy1 * dy1 + dz1 * dz1)));
             turnrate *= RTD / (pos2->time - pos1->time);
             //    turnrate = RTD * fabs( dAng ) / ( pos2->time - pos1->time );
 
@@ -3569,7 +3579,7 @@ ACMITape::InsertActiveEvent(ACMIEventHeader *eh, float dT)
     ActiveEvent *event = NULL;
     TracerEventData *td = NULL;
     SfxClass *sfx = NULL;
-    SimBaseClass *simBase;
+    SimBaseClass *simBase = NULL;
     Tpoint pos;
     Tpoint vec;
 
@@ -3582,106 +3592,182 @@ ACMITape::InsertActiveEvent(ACMIEventHeader *eh, float dT)
     {
         case ACMIRecTracerStart:
             // create new event record
-            event = new ActiveEvent;
-            F4Assert(event);
-            event->eventType = eh->eventType;
-            event->index = eh->index;
-            event->time = eh->time;
-            event->timeEnd = eh->timeEnd;
+			try
+			{
+				event = new ActiveEvent;
+				F4Assert(event);
+				event->eventType = eh->eventType;
+				event->index = eh->index;
+				event->time = eh->time;
+				event->timeEnd = eh->timeEnd;
 
-            // create new tracer event record
-            td = new TracerEventData;
-            F4Assert(td);
-            event->eventData = (void *)td;
+				try
+				{
+					// create new tracer event record
+					td = new TracerEventData;
+					F4Assert(td);
+					event->eventData = (void *)td;
 
-            // init tracer data
-            td->x = eh->x;
-            td->y = eh->y;
-            td->z = eh->z;
-            td->dx = eh->dx;
-            td->dy = eh->dy;
-            td->dz = eh->dz;
-            // create tracer
-            td->objTracer = new DrawableTracer(1.3f);
-            td->objTracer->SetAlpha(0.8f);
-            td->objTracer->SetRGB(1.0f, 1.0f, 0.2f);
+					// init tracer data
+					td->x = eh->x;
+					td->y = eh->y;
+					td->z = eh->z;
+					td->dx = eh->dx;
+					td->dy = eh->dy;
+					td->dz = eh->dz;
+					try
+					{
+						// create tracer
+						td->objTracer = new DrawableTracer(1.3f);
+						td->objTracer->SetAlpha(0.8f);
+						td->objTracer->SetRGB(1.0f, 1.0f, 0.2f);
 
-            UpdateTracerEvent(td, dT);
+						UpdateTracerEvent(td, dT);
 
-            // put it into the draw list
-            _viewPoint->InsertObject(td->objTracer);
+						// put it into the draw list
+						_viewPoint->InsertObject(td->objTracer);
+					}
+					catch(std::bad_alloc &ba)
+					{
+						std::cout<<ba.what()<<std::endl;
+						if(NULL != td->objTracer)
+							delete td->objTracer;
+					}
+				}
+				catch(std::bad_alloc &ba)
+				{
+					std::cout<<ba.what()<<std::endl;
+					if(NULL != td)
+						delete td;
+				}
+				
+			}
+			catch(std::bad_alloc &ba)
+			{
+				std::cout<<ba.what()<<std::endl;
+				if(NULL != event)
+					delete event;
+			}
 
             break;
 
         case ACMIRecStationarySfx:
-            // create new event record
-            event = new ActiveEvent;
-            F4Assert(event);
-            event->eventType = eh->eventType;
-            event->index = eh->index;
-            event->time = eh->time;
-            event->timeEnd = eh->timeEnd;
+			try
+			{
+				// create new event record
+				event = new ActiveEvent;
+				F4Assert(event);
+				event->eventType = eh->eventType;
+				event->index = eh->index;
+				event->time = eh->time;
+				event->timeEnd = eh->timeEnd;
 
-            pos.x = eh->x;
-            pos.y = eh->y;
-            pos.z = eh->z;
+				pos.x = eh->x;
+				pos.y = eh->y;
+				pos.z = eh->z;
 
-            // create new tracer event record
-            sfx = new SfxClass(eh->type,
-                               &pos,
-                               (float)(eh->timeEnd - eh->time),
-                               eh->scale);
+				try
+				{
+					// create new tracer event record
+					sfx = new SfxClass(eh->type,
+									   &pos,
+									   (float)(eh->timeEnd - eh->time),
+									   eh->scale);
 
-            F4Assert(sfx);
-            event->eventData = (void *)sfx;
+					F4Assert(sfx);
+					event->eventData = (void *)sfx;
 
-            sfx->ACMIStart(_viewPoint, event->time, _simTime);
+					sfx->ACMIStart(_viewPoint, event->time, _simTime);
+				}
+				catch(std::bad_alloc &ba)
+				{
+					std::cout<<ba.what()<<std::endl;
+					if(NULL != sfx)
+						delete sfx;
+				}
+			}
+			catch(std::bad_alloc &ba)
+			{
+				std::cout<<ba.what()<<std::endl;
+				if(NULL != event)
+					delete event;
+			}
 
             break;
 
         case ACMIRecMovingSfx:
-            // create new event record
-            event = new ActiveEvent;
-            F4Assert(event);
-            event->eventType = eh->eventType;
-            event->index = eh->index;
-            event->time = eh->time;
-            event->timeEnd = eh->timeEnd;
+			try
+			{
+				// create new event record
+				event = new ActiveEvent;
+				F4Assert(event);
+				event->eventType = eh->eventType;
+				event->index = eh->index;
+				event->time = eh->time;
+				event->timeEnd = eh->timeEnd;
 
-            pos.x = eh->x;
-            pos.y = eh->y;
-            pos.z = eh->z;
-            vec.x = eh->dx;
-            vec.y = eh->dy;
-            vec.z = eh->dz;
+				pos.x = eh->x;
+				pos.y = eh->y;
+				pos.z = eh->z;
+				vec.x = eh->dx;
+				vec.y = eh->dy;
+				vec.z = eh->dz;
 
-            // create new sfx
-            if (eh->user < 0)
-            {
-                sfx = new SfxClass(eh->type,
-                                   eh->flags,
-                                   &pos,
-                                   &vec,
-                                   (float)(eh->timeEnd - eh->time),
-                                   eh->scale);
-            }
-            else
-            {
-                // we need to build a base obj first
-                simBase = new SimStaticClass(0);// SimBaseClass( 0 );
-                simBase->drawPointer = new DrawableBSP(eh->user, &pos, &IMatrix, 1.0f);
-                simBase->SetPosition(pos.x, pos.y, pos.z);
-                simBase->SetDelta(vec.x, vec.y, vec.z);
-                simBase->SetYPR(0.0f, 0.0f, 0.0f);
-                simBase->SetYPRDelta(0.0f, 0.0f, 0.0f);
-                sfx = new SfxClass(eh->type, eh->flags, simBase, (float)(eh->timeEnd - eh->time), eh->scale);
-            }
+				// create new sfx
+				if (eh->user < 0)
+				{
+					try
+					{
+						sfx = new SfxClass(eh->type,
+									   eh->flags,
+									   &pos,
+									   &vec,
+									   (float)(eh->timeEnd - eh->time),
+									   eh->scale);
+					}
+					catch(std::bad_alloc &ba)
+					{
+						std::cout<<ba.what()<<std::endl;
+						if(NULL != sfx)
+							delete sfx;
+					}
+				}
+				else
+				{
+					try
+					{
+						// we need to build a base obj first
+						simBase = new SimStaticClass(0);// SimBaseClass( 0 );
+						simBase->drawPointer = new DrawableBSP(eh->user, &pos, &IMatrix, 1.0f);
+						simBase->SetPosition(pos.x, pos.y, pos.z);
+						simBase->SetDelta(vec.x, vec.y, vec.z);
+						simBase->SetYPR(0.0f, 0.0f, 0.0f);
+						simBase->SetYPRDelta(0.0f, 0.0f, 0.0f);
+						sfx = new SfxClass(eh->type, eh->flags, simBase, (float)(eh->timeEnd - eh->time), eh->scale);
+					}
+					catch(std::bad_alloc &ba)
+					{
+						std::cout<<ba.what()<<std::endl;
+						if(NULL != simBase->drawPointer)
+							delete simBase->drawPointer;
+						if(NULL != simBase)
+							delete simBase;
+						if(NULL != sfx)
+							delete sfx;
+					}
+				}
 
-            F4Assert(sfx);
-            event->eventData = (void *)sfx;
+				F4Assert(sfx);
+				event->eventData = (void *)sfx;
 
-            sfx->ACMIStart(_viewPoint, event->time, _simTime);
-
+				sfx->ACMIStart(_viewPoint, event->time, _simTime);
+			}
+			catch(std::bad_alloc &ba)
+			{
+				std::cout<<ba.what()<<std::endl;
+				if(NULL != event)
+					delete event;
+			}
             break;
 
             // current don't handle anything else

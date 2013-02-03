@@ -1142,9 +1142,9 @@ void ACMI_SaveItCB(long, short hittype, C_Base *control)
         acmiView->Tape()->SetWingTrailLength(gTrailLen);
         acmiView->Tape()->SetObjScale(gObjScale);
 
-        C_Window *win = gMainHandler->FindWindow(ACMI_RIGHT_WIN);
+        C_Window *win1 = gMainHandler->FindWindow(ACMI_RIGHT_WIN);
 
-        if (win)
+        if (win1)
         {
             C_Text *text = (C_Text *)win->FindControl(ACMI_TAPE_NAME);
 

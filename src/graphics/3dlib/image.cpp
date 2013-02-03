@@ -522,10 +522,20 @@ GLint UnpackGIF(CImageFileMemory *fi)
 */
 GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
 {
-    GLbyte  linebuffer[4096];
-    GLubyte firstcodestack[4096]; /* Stack for first codes */
-    GLubyte lastcodestack[4096];   /* Stack for previous code */
+    //GLbyte  linebuffer[4096];
+    //GLubyte firstcodestack[4096]; /* Stack for first codes */
+    //GLubyte lastcodestack[4096];   /* Stack for previous code */
     GLuint  codestack[4096];      /* Stack for links */
+
+	GLbyte *linebuffer = NULL;
+	linebuffer = (GLbyte *) malloc(4096);
+	GLubyte *firstcodestack = NULL;
+	firstcodestack = (GLubyte *) malloc(4096);
+	GLubyte *lastcodestack = NULL;
+	lastcodestack = (GLubyte *) malloc(4096);
+	//GLuint *codestack = NULL;
+	//codestack = (GLuint *)malloc(4096*2);
+
     GLuint  wordmasktable[] =
     {
         0x0000, 0x0001, 0x0003, 0x0007, 0x000f, 0x001f, 0x003f, 0x007f,
@@ -550,11 +560,14 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
     GLuint  pass = 0;         /* pass number for interlaced pictures */
     GLubyte  *p;             /* Pointer to current byte in read buffer */
     GLubyte  *q;             /* Pointer past last byte in read buffer */
-    GLubyte  b[256];         /* Read buffer */
+    //GLubyte  b[256];         /* Read buffer */
+	GLubyte *b = NULL;
+	b = (GLubyte *) malloc(256);
     GLubyte  *u;             /* Stack pointer into firstcodestack */
     GLubyte  *buffer;        /* Pointer to image buffer */
 
-    if (bits < 2 || bits > 8) return(BAD_SYMBOLSIZE);
+    if (bits < 2 || bits > 8) 
+		return(BAD_SYMBOLSIZE);
 
     p = q = b;
     bitsleft = 8;
@@ -611,9 +624,11 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
         thiscode &= wordmasktable[codesize];
         currentcode = thiscode;
 
-        if (thiscode == (bits2 + 1)) break;     /* found EOI */
+        if (thiscode == (bits2 + 1)) 
+			break;     /* found EOI */
 
-        if (thiscode > nextcode) return(BAD_CODE);
+        if (thiscode > nextcode) 
+			return(BAD_CODE);
 
         if (thiscode == bits2)
         {
@@ -715,6 +730,13 @@ GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag)
 
         oldcode = currentcode;
     }
+
+	free(linebuffer);
+	free(firstcodestack);
+	free(lastcodestack);
+	//free(codestack);
+
+	free(b);
 
     return(GOOD_READ);
 }       /* GIF_UnpackImage */
