@@ -2126,11 +2126,13 @@ void RenderOTW::DrawGapFiller(SpanListEntry *span)
 
         crossOver = max(span->Bsector.startDraw, 0);
 
-        for (c = span->Bsector.stopDraw; c >= crossOver; c--) DrawTerrainSquare(r, c, LOD);
+        for (c = span->Bsector.stopDraw; c >= crossOver; c--) 
+            DrawTerrainSquare(r, c, LOD);
 
         crossOver = min(span->Bsector.stopDraw, -1);
 
-        for (c = span->Bsector.startDraw; c <= crossOver; c++) DrawTerrainSquare(r, c, LOD);
+        for (c = span->Bsector.startDraw; c <= crossOver; c++) 
+            DrawTerrainSquare(r, c, LOD);
     }
     else
     {
@@ -2139,11 +2141,13 @@ void RenderOTW::DrawGapFiller(SpanListEntry *span)
 
         crossOver = max(span->Tsector.startDraw, 0);
 
-        for (c = span->Tsector.stopDraw; c >= crossOver; c--) DrawTerrainSquare(r, c, LOD);
+        for (c = span->Tsector.stopDraw; c >= crossOver; c--) 
+            DrawTerrainSquare(r, c, LOD);
 
         crossOver = min(span->Tsector.stopDraw, -1);
 
-        for (c = span->Tsector.startDraw; c <= crossOver; c++) DrawTerrainSquare(r, c, LOD);
+        for (c = span->Tsector.startDraw; c <= crossOver; c++) 
+            DrawTerrainSquare(r, c, LOD);
     }
 
 
@@ -2154,11 +2158,13 @@ void RenderOTW::DrawGapFiller(SpanListEntry *span)
 
         crossOver = max(span->Lsector.startDraw, 0);
 
-        for (r = span->Lsector.stopDraw; r >= crossOver; r--) DrawTerrainSquare(r, c, LOD);
+        for (r = span->Lsector.stopDraw; r >= crossOver; r--) 
+            DrawTerrainSquare(r, c, LOD);
 
         crossOver = min(span->Lsector.stopDraw, -1);
 
-        for (r = span->Lsector.startDraw; r <= crossOver; r++) DrawTerrainSquare(r, c, LOD);
+        for (r = span->Lsector.startDraw; r <= crossOver; r++) 
+            DrawTerrainSquare(r, c, LOD);
     }
     else
     {
@@ -2167,11 +2173,13 @@ void RenderOTW::DrawGapFiller(SpanListEntry *span)
 
         crossOver = max(span->Rsector.startDraw, 0);
 
-        for (r = span->Rsector.stopDraw; r >= crossOver; r--) DrawTerrainSquare(r, c, LOD);
+        for (r = span->Rsector.stopDraw; r >= crossOver; r--) 
+            DrawTerrainSquare(r, c, LOD);
 
         crossOver = min(span->Rsector.stopDraw, -1);
 
-        for (r = span->Rsector.startDraw; r <= crossOver; r++) DrawTerrainSquare(r, c, LOD);
+        for (r = span->Rsector.startDraw; r <= crossOver; r++) 
+            DrawTerrainSquare(r, c, LOD);
     }
 }
 

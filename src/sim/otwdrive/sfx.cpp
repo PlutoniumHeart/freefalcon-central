@@ -212,7 +212,7 @@ int SfxClass::TryParticleEffect(void)
          return 0;
         */
 
-        type ++; // Cobra - the SFX.cpp type is used in AddParticle(), so add 1 to use PS ID
+        //type ++; // Cobra - the SFX.cpp type is used in AddParticle(), so add 1 to use PS ID
         //objParticleSys = new DrawableParticleSys(type,1);
         //objParticleSys->AddParticle(type, &pos, &vec);
         DrawableParticleSys::PS_AddParticleEx(type, &pos, &vec);
