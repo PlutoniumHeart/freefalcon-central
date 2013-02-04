@@ -171,11 +171,7 @@ SimObjectType* IrstClass::ConsiderDecoy(SimObjectType *target)
             // Only take the bait if we can see the thing
             if (cosATA >= cos(CM_EFFECTIVE_ANGLE))
             {
-#ifdef DEBUG
-                /* target = new SimObjectType(OBJ_TAG, platform, cm);*/
-#else
                 target = new SimObjectType(cm);
-#endif
                 target->localData->irSignature = 20.0;//me123
                 SetSensorTarget(target); // JPO - do it now
             }

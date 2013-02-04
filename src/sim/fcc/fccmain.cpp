@@ -1134,11 +1134,7 @@ SimObjectType* FireControlComputer::TargetStep(SimObjectType* startObject, int c
     if (groundTarget)
     {
         // We're targeting a feature thing - make a new SimObjectType
-#ifdef DEBUG
-        //retObject = new SimObjectType(OBJ_TAG, platform, (SimBaseClass*)groundTarget);
-#else
         retObject = new SimObjectType((SimBaseClass*)groundTarget);
-#endif
         retObject->localData->ataFrom = 180.0F * DTR;
     }
 

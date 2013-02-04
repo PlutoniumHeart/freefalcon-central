@@ -866,11 +866,7 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
         if (closestObj)
         {
             Tpoint pos;
-#ifdef DEBUG
-            //tmpTarget = new SimObjectType(OBJ_TAG, platform, closestObj);
-#else
             tmpTarget = new SimObjectType(closestObj);
-#endif
             tmpTarget->Reference();
 
             //if ((SimBaseClass*)tmpTarget->BaseData()-> )

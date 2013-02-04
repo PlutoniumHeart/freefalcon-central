@@ -778,11 +778,7 @@ void DigitalBrain::SetThreat(FalconEntity *obj)
         }
 
         // create new target data and reference it
-#ifdef DEBUG
-        //threatPtr = new SimObjectType( OBJ_TAG, self, obj );
-#else
         threatPtr = new SimObjectType(obj);
-#endif
         threatTimer = 10.0f;
         SetTarget(threatPtr);
 

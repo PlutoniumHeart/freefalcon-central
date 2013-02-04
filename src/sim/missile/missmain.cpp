@@ -1130,11 +1130,7 @@ MissileClass::EndMissile(void)
                     if (targetPtr)
                         targetPtr->Release();
 
-#ifdef DEBUG
-                    /*    targetPtr = new SimObjectType( OBJ_TAG, NULL, campBaseObj );*/
-#else
                     targetPtr = new SimObjectType(campBaseObj);
-#endif
                     targetPtr->Reference();
                 }
 

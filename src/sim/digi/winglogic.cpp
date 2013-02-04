@@ -221,11 +221,7 @@ void DigitalBrain::AiSearchTargetList(VuEntity* pentity)
         //    if (!targetPtr || targetPtr->BaseData() != theTarget)
         if ((!targetPtr || targetPtr->BaseData() != theTarget) && (!groundTargetPtr || groundTargetPtr->BaseData() != theTarget))
         {
-#ifdef DEBUG
-            /*     objectPtr = new SimObjectType (OBJ_TAG, self, theTarget);*/
-#else
             objectPtr = new SimObjectType(theTarget);
-#endif
             SetTarget(objectPtr);
             // 2000-09-18 ADDED BY S.G. SO AI STARTS SHOOTING RIGHT NOW AND STOP WAITING THAT STUPID 30 SECONDS!
             missileShotTimer = 0;

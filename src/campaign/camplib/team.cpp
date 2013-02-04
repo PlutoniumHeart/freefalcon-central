@@ -60,12 +60,6 @@ extern VU_ID_NUMBER RenameTable[65536];
 extern int gRenameIds;
 #endif
 
-#ifdef DEBUG
-//extern int gPlaceholderOnly;
-//extern VuAntiDatabase *vuAntiDB;
-//extern char gPlaceholderFile[80];
-#endif
-
 extern int gCampDataVersion;
 extern int g_nNoPlayerPlay; // JB 010926
 

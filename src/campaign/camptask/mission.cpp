@@ -1745,11 +1745,8 @@ long SetWPTimes(Flight u, MissionRequestClass *mis)
             ((Package)pack)->SetTPTime(mission_time);
 
         mission_time += w->GetWPStationTime();
-#ifdef DEBUG
-        // if (u->GetUnitMission() != AMIS_ALERT && u->GetUnitMission() != AMIS_RECONPATROL)
-        // ShiAssert(!WayPointErrorCode(w,u));
-#endif
-        w = w->GetNextWP();
+
+		w = w->GetNextWP();
         x = nx;
         y = ny;
     }

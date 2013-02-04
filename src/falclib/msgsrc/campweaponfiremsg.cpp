@@ -1250,12 +1250,8 @@ FireMissileAtSim(CampEntity shooter, SimBaseClass *simTarg, short weapId)
     theMissile->SetDelta(shooter->XDelta(), shooter->YDelta(), shooter->ZDelta());
 
     // create a target object
-#ifdef DEBUG
-    //tmpTargetPtr = new SimObjectType( OBJ_TAG, theMissile, simTarg );
     tmpTargetPtr = NULL;
-#else
     tmpTargetPtr = new SimObjectType(simTarg);
-#endif
     tmpTargetPtr->Reference();
 
     // Assign a shooter slot (always flight lead)

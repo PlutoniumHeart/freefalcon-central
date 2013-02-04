@@ -40,11 +40,6 @@ static inline void SetForegroundColor(DWORD opFlag, int rgbaIdx, int IIdx)
     Pintensity I;
     DWORD color = 0;
 
-#ifdef DEBUG
-    int colorSet = TRUE;
-#endif
-
-
     if (opFlag & PRIM_COLOP_COLOR)
     {
         ShiAssert(rgbaIdx >= 0);
@@ -80,7 +75,6 @@ static inline void SetForegroundColor(DWORD opFlag, int rgbaIdx, int IIdx)
         color |= color << 8;
     }
 
-    ShiAssert(colorSet);
     TheStateStack.context->SelectForegroundColor(color);
 }
 

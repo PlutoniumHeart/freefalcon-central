@@ -290,11 +290,7 @@ void HeliBrain::SetTargetEntity(FalconEntity *obj)
         }
 
         // create new target data and reference it
-#ifdef DEBUG
-        //targetPtr = new SimObjectType( OBJ_TAG, self, obj );
-#else
         targetPtr = new SimObjectType(obj);
-#endif
         targetPtr->Reference();
         targetData = targetPtr->localData;
         // SetTarget( targetPtr );

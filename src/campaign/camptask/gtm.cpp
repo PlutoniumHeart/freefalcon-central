@@ -42,10 +42,6 @@
 // Debug Mode
 // =====================
 
-#ifdef DEBUG
-//#define KEV_GDEBUG 0
-#endif
-
 extern void debugprintf(LPSTR dbgFormat, ...);
 
 //#define MonoPrint  debugprintf

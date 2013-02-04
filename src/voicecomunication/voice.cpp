@@ -917,6 +917,7 @@ HRESULT SendDirectPlayMessage()
     HRESULT         hr = S_OK;
     DPN_BUFFER_DESC dpnBuffer;
     WCHAR           wszData[256];
+	wszData[0] = '\0';
 
     // Get the data from the user
     MonoPrint("\nPlease Enter a String.\n");

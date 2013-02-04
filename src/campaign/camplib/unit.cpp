@@ -733,11 +733,6 @@ int UnitClass::ApplyDamage(FalconCampWeaponsFire *cwfm, uchar bonusToHit)
     *gDamageStatusPtr = (uchar)GetUnitMorale();
     gDamageStatusPtr++;
 
-#ifdef DEBUG
-    // if (shooter->IsFlight())
-    // MonoPrint("%d (%d,%d) took %d losses from %d (%d,%d). range = %d\n",GetCampID(),tx,ty,currentLosses,shooter->GetCampID(),sx,sy,range);
-#endif
-
 #ifdef KEEP_STATISTICS
 
     if (IsFlight())
@@ -2581,13 +2576,6 @@ void UnitClass::KillUnit(void)
         msg->dataBlock.message = FalconSimCampMessage::simcampReaggregate;
         FalconSendMessage(msg);
     }
-
-#ifdef DEBUG
-    // if (IsFlight())
-    // {
-    // ShiAssert(((Flight)this)->pilots[0] == NO_PILOT && ((Flight)this)->pilots[1] == NO_PILOT && ((Flight)this)->pilots[2] == NO_PILOT && ((Flight)this)->pilots[3] == NO_PILOT);
-    // }
-#endif
 
     if (!IsDead())
         SetDead(1);
