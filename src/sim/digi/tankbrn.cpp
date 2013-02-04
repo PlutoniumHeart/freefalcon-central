@@ -1263,9 +1263,9 @@ void TankerBrain::TurnToTrackPoint(int trackPoint)
 
 void TankerBrain::FollowThirsty(void)
 {
-    float xyRange, dist, dx, dy, heading;
-    float oldAz, oldEl, oldRange;
-    FalconTankerMessage* tankMsg;
+    float xyRange = 0.0, dist = 0.0, dx_1 = 0.0, dy_1 = 0.0, heading = 0.0;
+    float oldAz = 0.0, oldEl = 0.0, oldRange = 0.0;
+    FalconTankerMessage* tankMsg = NULL;
 
     // Find the thirsty one
     if (!tankingPtr || tankingPtr->BaseData() != curThirsty)
@@ -1408,9 +1408,9 @@ void TankerBrain::FollowThirsty(void)
                 if (turnallow)
                 {
                     turnallow = false;
-                    dx = trackX - self->XPos();
-                    dy = trackY - self->YPos();
-                    heading = (float)atan2(dy, dx);
+                    dx_1 = trackX - self->XPos();
+                    dy_1 = trackY - self->YPos();
+                    heading = (float)atan2(dy_1, dx_1);
 
                     if (heading < 0.0F)
                         heading += PI * 2.0F;
@@ -1429,10 +1429,10 @@ void TankerBrain::FollowThirsty(void)
 
         if (g_bUseTankerTrack)
         {
-            dy = TrackPoints[currentTP].y - self->YPos();
-            dx = TrackPoints[currentTP].x - self->XPos();
+            dy_1 = TrackPoints[currentTP].y - self->YPos();
+            dx_1 = TrackPoints[currentTP].x - self->XPos();
 
-            heading = (float)atan2(dy, dx);
+            heading = (float)atan2(dy_1, dx_1);
 
             if (fabs(self->Yaw() - heading) < g_fHeadingStabilizeFactor) // when our course is close to trackpoint's direction
                 rStick = 0.0F;   // stabilize Tanker's heading

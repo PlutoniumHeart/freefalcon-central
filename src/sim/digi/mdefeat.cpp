@@ -452,14 +452,14 @@ void DigitalBrain::MissileDefeat()
     }
 
     // calc approx threat time
-    float dx, dy, dz, range, threatTime;
+    float dx_1 = 0.0, dy_1 = 0.0, dz_1 = 0.0, range = 0.0, threatTime = 0.0;
 
-    dx = self->incomingMissile[0]->XPos() - self->XPos();
-    dy = self->incomingMissile[0]->YPos() - self->YPos();
-    dz = self->incomingMissile[0]->ZPos() - self->ZPos();
+    dx_1 = self->incomingMissile[0]->XPos() - self->XPos();
+    dy_1 = self->incomingMissile[0]->YPos() - self->YPos();
+    dz_1 = self->incomingMissile[0]->ZPos() - self->ZPos();
 
 
-    range = (float)sqrt(dx * dx + dy * dy + dz * dz);
+    range = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1 + dz_1 * dz_1);
     threatTime = range / AVE_AIM9L_VEL;
 
     /*--------------------------------------------*/
@@ -519,7 +519,7 @@ void DigitalBrain::MissileDefeat()
 
     }
     else
-        MissileLastDitch(dx, dy, dz);
+        MissileLastDitch(dx_1, dy_1, dz_1);
 
 }
 

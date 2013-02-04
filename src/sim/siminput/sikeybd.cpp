@@ -20,7 +20,7 @@ void OnSimKeyboardInput()
     static int CtrlCount = 0;
     static int AltCount = 0;
     int state;
-    char     buffer[256];
+    char buffer[256];
 
     dwElements = DKEYBOARD_BUFFERSIZE;
     hResult = gpDIDevice[SIM_KEYBOARD]->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), ObjData, &dwElements, 0);

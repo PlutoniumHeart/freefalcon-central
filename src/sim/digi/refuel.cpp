@@ -41,15 +41,15 @@ void DigitalBrain::AiRefuel(void)
 
         if (tanker)
         {
-            float xft;
-            float yft;
-            float zft;
-            float rx, fx;
-            float ry, fy;
-            float rz, fz;
-            float dx, dy, dz, dist;
+            float xft = 0.0;
+            float yft = 0.0;
+            float zft = 0.0;
+            float rx = 0.0, fx = 0.0;
+            float ry = 0.0, fy = 0.0;
+            float rz = 0.0, fz = 0.0;
+            float dx_1 = 0.0, dy_1 = 0.0, dz_1 = 0.0, dist = 0.0;
             Tpoint targetPos;
-            float rad;
+            float rad = 0.0;
             int ReadySet = 0;
 
             if (self->drawPointer)
@@ -104,11 +104,11 @@ void DigitalBrain::AiRefuel(void)
                     }
                     else
                     {
-                        dx = trackX - af->x;
-                        dy = trackY - af->y;
-                        dz = trackZ - af->z;
+                        dx_1 = trackX - af->x;
+                        dy_1 = trackY - af->y;
+                        dz_1 = trackZ - af->z;
 
-                        if (dx * dx + dy * dy > 0.01 * NM_TO_FT * NM_TO_FT)
+                        if (dx_1 * dx_1 + dy_1 * dy_1 > 0.01 * NM_TO_FT * NM_TO_FT)
                         {
                             ClearATCFlag(NeedToRefuel);
                             tankerId = FalconNullId;
@@ -156,24 +156,24 @@ void DigitalBrain::AiRefuel(void)
             }
 
             // Calculate relative positions
-            dx = trackX - af->x;
-            dy = trackY - af->y;
-            dz = trackZ - af->z;
+            dx_1 = trackX - af->x;
+            dy_1 = trackY - af->y;
+            dz_1 = trackZ - af->z;
 
             // Distance
-            dist = (float)sqrt(dx * dx + dy * dy + dz * dz);
+            dist = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1 + dz_1 * dz_1);
 
             dist = max(dist, 0.001F);
 
             float RFR = af->GetRefuelFollowRate();
 
-            fx = dx / dist * RFR * SimLibLastMajorFrameTime;
-            fy = dy / dist * RFR * SimLibLastMajorFrameTime;
-            fz = dz / dist * RFR * SimLibLastMajorFrameTime;
+            fx = dx_1 / dist * RFR * SimLibLastMajorFrameTime;
+            fy = dy_1 / dist * RFR * SimLibLastMajorFrameTime;
+            fz = dz_1 / dist * RFR * SimLibLastMajorFrameTime;
 
             bool tractor = false;
 
-            if (fabs(dx) > fabs(fx))
+            if (fabs(dx_1) > fabs(fx))
                 af->x = af->x + fx;
             else
             {
@@ -182,7 +182,7 @@ void DigitalBrain::AiRefuel(void)
                 af->x = trackX;
             }
 
-            if (fabs(dy) > fabs(fy))
+            if (fabs(dy_1) > fabs(fy))
                 af->y = af->y + fy;
             else
             {
@@ -191,7 +191,7 @@ void DigitalBrain::AiRefuel(void)
                 af->y = trackY;
             }
 
-            if (fabs(dz) > fabs(fz))
+            if (fabs(dz_1) > fabs(fz))
                 af->z = af->z + fz;
             else
             {
@@ -205,11 +205,11 @@ void DigitalBrain::AiRefuel(void)
             ShiAssert(!_isnan(af->z));
 
             // 12DEC03 - FRB - update distance to refueling position
-            dx = trackX - af->x;
-            dy = trackY - af->y;
-            dz = trackZ - af->z;
+            dx_1 = trackX - af->x;
+            dy_1 = trackY - af->y;
+            dz_1 = trackZ - af->z;
 
-            dist = (float)sqrt(dx * dx + dy * dy + dz * dz);
+            dist = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1 + dz_1 * dz_1);
 
             dist = max(dist, 0.001F);
             // - FRB
