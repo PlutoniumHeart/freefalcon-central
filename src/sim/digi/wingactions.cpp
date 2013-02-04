@@ -94,15 +94,15 @@ void DigitalBrain::AiPerformManeuver(void)
 
             if (theRadar)
             {
-                if (theRadar->digiRadarMode = RadarClass::DigiSTT)
+                if (theRadar->digiRadarMode == RadarClass::DigiSTT)
                     strcat(tmpchr, " STT");
-                else if (theRadar->digiRadarMode = RadarClass::DigiSAM)
+                else if (theRadar->digiRadarMode == RadarClass::DigiSAM)
                     strcat(tmpchr, " SAM");
-                else if (theRadar->digiRadarMode = RadarClass::DigiTWS)
+                else if (theRadar->digiRadarMode == RadarClass::DigiTWS)
                     strcat(tmpchr, " TWS");
-                else if (theRadar->digiRadarMode = RadarClass::DigiRWS)
+                else if (theRadar->digiRadarMode == RadarClass::DigiRWS)
                     strcat(tmpchr, " RWS");
-                else if (theRadar->digiRadarMode = RadarClass::DigiOFF)
+                else if (theRadar->digiRadarMode == RadarClass::DigiOFF)
                     strcat(tmpchr, "%s OFF");
                 else strcat(tmpchr, " UNKNOWN");
             }
@@ -539,12 +539,12 @@ void DigitalBrain::AiExecChainsaw(void)
 
 void DigitalBrain::AiExecPince(void)
 {
-    float dx, dy;
-    float deltaSq;
+    float dx_1 = 0, dy_1 = 0;
+    float deltaSq = 0.0;
 
-    dx = trackX - self->XPos();
-    dy = trackY - self->YPos();
-    deltaSq = dx * dx + dy * dy;
+    dx_1 = trackX - self->XPos();
+    dy_1 = trackY - self->YPos();
+    deltaSq = dx_1 * dx_1 + dy_1 * dy_1;
 
     // S.G. 1000 feet is too short. I'll make this 5000.0. This will prevent AI from turning around its maneuver point, never to reach it...
     // if(deltaSq <= 1000.0F * 1000.0F) {
@@ -574,12 +574,12 @@ void DigitalBrain::AiExecPince(void)
 
 void DigitalBrain::AiExecFlex(void)
 {
-    float dx, dy;
-    float deltaSq;
+    float dx_1 = 0, dy_1 = 0;
+    float deltaSq = 0;
 
-    dx = trackX - self->XPos();
-    dy = trackY - self->YPos();
-    deltaSq = dx * dx + dy * dy;
+    dx_1 = trackX - self->XPos();
+    dy_1 = trackY - self->YPos();
+    deltaSq = dx_1 * dx_1 + dy_1 * dy_1;
 
     if (deltaSq <= 900.0F * 900.0F)
     {
@@ -589,6 +589,7 @@ void DigitalBrain::AiExecFlex(void)
     if (mPointCounter >= TOTAL_MANEUVER_PTS)
     {
         AiClearManeuver();
+		return;
     }
 
     trackX = mpManeuverPoints[mPointCounter][0];

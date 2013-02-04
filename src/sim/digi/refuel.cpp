@@ -320,7 +320,7 @@ void DigitalBrain::AiRefuel(void)
             // get actual closure
             actualClosure = - (rx - velocitySlope + followVector.x) / SimLibLastMajorFrameTime;
 
-            float eProp, thr;
+            float eProp = 0, thr = 0;
             eProp = desiredClosure - actualClosure;
 
             // 27NOV03 - FRB - Slow down to get behind tanker
@@ -412,7 +412,7 @@ void DigitalBrain::AiRefuel(void)
             if (g_nShowDebugLabels & 0x20000)
             {
                 char tmpchr[32];
-                float tX, tY, tZ;
+                float tX = 0, tY = 0, tZ = 0;
 
                 // JB 020311 Respond to commands from the tanker.
                 tX = targetPos.x - tankerRelPositioning.x;
@@ -452,17 +452,17 @@ void DigitalBrain::AiRefuel(void)
 void DigitalBrain::HelpRefuel(AircraftClass *tanker)
 {
 
-    float desiredClosure, actualClosure;
-    float eProp;
-    float xft;
-    float yft;
-    float zft;
-    float rx, fx, fxr;
-    float ry, fy, fyr;
-    float rz, fz, fzr;
-    float dx, dy, dz, dist;
+    float desiredClosure = 0.0, actualClosure = 0.0;
+    float eProp = 0.0;
+    float xft = 0.0;
+    float yft = 0.0;
+    float zft = 0.0;
+    float rx = 0.0, fx = 0.0, fxr = 0.0;
+    float ry = 0.0, fy = 0.0, fyr = 0.0;
+    float rz = 0.0, fz = 0.0, fzr = 0.0;
+    float dx_1 = 0.0, dy_1 = 0.0, dz_1 = 0.0, dist = 0.0;
     Tpoint targetPos;
-    int refuelMode;
+    int refuelMode = 0;
     int ReadySet = 0;
 
     fx = fy = fz = 0.0F;
@@ -472,21 +472,21 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
 
     SetTrackPoint(targetPos.x, targetPos.y, targetPos.z);
 
-    dx = trackX - af->x;
-    dy = trackY - af->y;
-    dz = trackZ - af->z;
+    dx_1 = trackX - af->x;
+    dy_1 = trackY - af->y;
+    dz_1 = trackZ - af->z;
 
-    dist = (float)sqrt(dx * dx + dy * dy + dz * dz);
+    dist = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1 + dz_1 * dz_1);
 
     dist = max(dist, 0.001F);
 
     if (af->IsSet(AirframeClass::Refueling))
     {
-        fxr = dx / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime;
-        fyr = dy / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime;
-        fzr = dz / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime;
+        fxr = dx_1 / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime;
+        fyr = dy_1 / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime;
+        fzr = dz_1 / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime;
 
-        if (fabs(dx) > fabs(fxr))
+        if (fabs(dx_1) > fabs(fxr))
             af->x = af->x + fxr;
         else
         {
@@ -494,7 +494,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
             af->x = trackX;
         }
 
-        if (fabs(dy) > fabs(fyr))
+        if (fabs(dy_1) > fabs(fyr))
             af->y = af->y + fyr;
         else
         {
@@ -502,7 +502,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
             af->y = trackY;
         }
 
-        if (fabs(dz) > fabs(fzr))
+        if (fabs(dz_1) > fabs(fzr))
             af->z = af->z + fzr;
         else
         {
@@ -532,19 +532,19 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
         af->SetSimpleMode(SIMPLE_MODE_AF);
 
 
-        dx = trackX - af->x;
-        dy = trackY - af->y;
-        dz = trackZ - af->z;
+        dx_1 = trackX - af->x;
+        dy_1 = trackY - af->y;
+        dz_1 = trackZ - af->z;
 
-        dist = (float)sqrt(dx * dx + dy * dy + dz * dz);
+        dist = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1 + dz_1 * dz_1);
 
         dist = max(dist, 0.001F);
 
-        fx = dx / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime * (refuelMode + 1);
-        fy = dy / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime * (refuelMode + 1);
-        fz = dz / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime * (refuelMode + 1);
+        fx = dx_1 / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime * (refuelMode + 1);
+        fy = dy_1 / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime * (refuelMode + 1);
+        fz = dz_1 / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime * (refuelMode + 1);
 
-        if (fabs(dx) > fabs(fx))
+        if (fabs(dx_1) > fabs(fx))
             af->x = af->x + fx;
         else
         {
@@ -552,7 +552,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
             af->x = trackX;
         }
 
-        if (fabs(dy) > fabs(fy))
+        if (fabs(dy_1) > fabs(fy))
             af->y = af->y + fy;
         else
         {
@@ -560,7 +560,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
             af->y = trackY;
         }
 
-        if (fabs(dz) > fabs(fz))
+        if (fabs(dz_1) > fabs(fz))
             af->z = af->z + fz;
         else
         {
@@ -758,9 +758,9 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
             char tmpchr[32];
 
             if (decelerating)
-                sprintf(tmpchr, "D %3.2f %5.1f %6.1", af->vcas, oldrx, af->Fuel() + af->ExternalFuel());
+                sprintf(tmpchr, "D %3.2f %5.1f %6.1f", af->vcas, oldrx, af->Fuel() + af->ExternalFuel());
             else
-                sprintf(tmpchr, "%3.2f %5.1f %6.1", af->vcas, oldrx, af->Fuel() + af->ExternalFuel());
+                sprintf(tmpchr, "%3.2f %5.1f %6.1f", af->vcas, oldrx, af->Fuel() + af->ExternalFuel());
 
             if (self->drawPointer)
                 ((DrawableBSP*)self->drawPointer)->SetLabel(tmpchr, ((DrawableBSP*)self->drawPointer)->LabelColor());

@@ -94,14 +94,14 @@ void DigitalBrain::ResetTaxiState(void)
     // sfr: this is causing a big mess,
     // so Im renaming rwindex to rwLocalIndex (avoid confusion with member variable)
     // I just renamed here and the usages, nothing else... this code is confusing
-    int takeoffpt, runwaypt, rwLocalIndex;
-    float x1, y1, x2, y2;
-    float dx, dy, relx;
+    int takeoffpt = 0, runwaypt = 0, rwLocalIndex = 0;
+    float x1 = 0.0, y1 = 0.0, x2 = 0.0, y2 = 0.0;
+    float dx_1 = 0.0, dy_1 = 0.0, relx = 0.0;
     //float deltaHdg;
     //ObjectiveClass *Airbase = (ObjectiveClass *)vuDatabase->Find(airbase);
 
     // sfr: fixing xy order
-    GridIndex gx, gy;
+    GridIndex gx = 0, gy = 0;
     //gx = SimToGrid(self->YPos());
     //gy = SimToGrid(self->XPos());
     ::vector pos = { self->XPos(), self->YPos()};
@@ -158,9 +158,9 @@ void DigitalBrain::ResetTaxiState(void)
     while (taxiPoint)
     {
         TranslatePointData(Airbase, taxiPoint, &x1, &y1);
-        dx = x1 - af->x;
-        dy = y1 - af->y;
-        dist = dx * dx + dy * dy;
+        dx_1 = x1 - af->x;
+        dy_1 = y1 - af->y;
+        dist = dx_1 * dx_1 + dy_1 * dy_1;
 
         if (dist < closestDist)
         {
@@ -203,10 +203,10 @@ void DigitalBrain::ResetTaxiState(void)
                             self->platformAngles.cossig * PtHeaderDataTable[rwIndex].cosHeading;
 
         runwayStatsStruct *runwayStats = Airbase->brain->GetRunwayStats();
-        dx = runwayStats[PtHeaderDataTable[rwIndex].runwayNum].centerX - self->XPos();
-        dy = runwayStats[PtHeaderDataTable[rwIndex].runwayNum].centerY - self->YPos();
+        dx_1 = runwayStats[PtHeaderDataTable[rwIndex].runwayNum].centerX - self->XPos();
+        dy_1 = runwayStats[PtHeaderDataTable[rwIndex].runwayNum].centerY - self->YPos();
 
-        relx = PtHeaderDataTable[rwIndex].cosHeading * dx + PtHeaderDataTable[rwIndex].sinHeading * dy;
+        relx = PtHeaderDataTable[rwIndex].cosHeading * dx_1 + PtHeaderDataTable[rwIndex].sinHeading * dy_1;
 
         if (
             cosAngle > 0.99619F &&
@@ -246,9 +246,9 @@ void DigitalBrain::ResetTaxiState(void)
         else
         {
             TranslatePointData(Airbase, curTaxiPoint, &x1, &y1);
-            dx = x1 - af->x;
-            dy = y1 - af->y;
-            relx = self->platformAngles.cospsi * dx + self->platformAngles.sinpsi * dy;
+            dx_1 = x1 - af->x;
+            dy_1 = y1 - af->y;
+            relx = self->platformAngles.cospsi * dx_1 + self->platformAngles.sinpsi * dy_1;
 
             if (relx < 0.0F)
             {
@@ -268,7 +268,7 @@ void DigitalBrain::ResetTaxiState(void)
 float DigitalBrain::CalculateNextTurnDistance(void)
 {
     float curHeading = 0.0F, newHeading = 0.0F, cosAngle = 1.0F, deltaHdg = 0.0F;
-    float baseX = 0.0F, baseY = 0.0F, finalX = 0.0F, finalY = 0.0F, dx = 0.0F, dy = 0.0F, vt = 0.0F;
+    float baseX = 0.0F, baseY = 0.0F, finalX = 0.0F, finalY = 0.0F, dx_1 = 0.0F, dy_1 = 0.0F, vt = 0.0F;
     ObjectiveClass *Airbase = (ObjectiveClass *)vuDatabase->Find(airbase);
 
     turnDist = 500.0F;
@@ -289,9 +289,9 @@ float DigitalBrain::CalculateNextTurnDistance(void)
         switch (atcstatus)
         {
             case lFirstLeg:
-                dx = self->XPos() - trackX;
-                dy = self->YPos() - trackY;
-                curHeading = (float)atan2(dy, dx);
+                dx_1 = self->XPos() - trackX;
+                dy_1 = self->YPos() - trackY;
+                curHeading = (float)atan2(dy_1, dx_1);
 
                 if (curHeading < 0.0F)
                     curHeading += PI * 2.0F;
@@ -301,16 +301,16 @@ float DigitalBrain::CalculateNextTurnDistance(void)
                 if (cosAngle < 0.0F)
                 {
                     Airbase->brain->FindBasePt(self, rwIndex, finalX, finalY, &baseX, &baseY);
-                    dx = trackX - baseX;
-                    dy = trackY - baseY;
+                    dx_1 = trackX - baseX;
+                    dy_1 = trackY - baseY;
                 }
                 else
                 {
-                    dx = trackX - finalX;
-                    dy = trackY - finalY;
+                    dx_1 = trackX - finalX;
+                    dy_1 = trackY - finalY;
                 }
 
-                newHeading = (float)atan2(dy, dx);
+                newHeading = (float)atan2(dy_1, dx_1);
 
                 if (newHeading < 0.0F)
                     newHeading += PI * 2.0F;
@@ -326,17 +326,17 @@ float DigitalBrain::CalculateNextTurnDistance(void)
                 break;
 
             case lToBase:
-                dx = self->XPos() - trackX;
-                dy = self->YPos() - trackY;
-                curHeading = (float)atan2(dy, dx);
+                dx_1 = self->XPos() - trackX;
+                dy_1 = self->YPos() - trackY;
+                curHeading = (float)atan2(dy_1, dx_1);
 
                 if (curHeading < 0.0F)
                     curHeading += PI * 2.0F;
 
                 Airbase->brain->FindFinalPt(self, rwIndex, &finalX, &finalY);
-                dx = trackX - finalX;
-                dy = trackY - finalY;
-                newHeading = (float)atan2(dy, dx);
+                dx_1 = trackX - finalX;
+                dy_1 = trackY - finalY;
+                newHeading = (float)atan2(dy_1, dx_1);
 
                 if (newHeading < 0.0F)
                     newHeading += PI * 2.0F;
@@ -353,9 +353,9 @@ float DigitalBrain::CalculateNextTurnDistance(void)
 
             case lToFinal:
             case lOnFinal:
-                dx = self->XPos() - trackX;
-                dy = self->YPos() - trackY;
-                curHeading = (float)atan2(dy, dx);
+                dx_1 = self->XPos() - trackX;
+                dy_1 = self->YPos() - trackY;
+                curHeading = (float)atan2(dy_1, dx_1);
 
                 if (curHeading < 0.0F)
                     curHeading += PI * 2.0F;
@@ -402,10 +402,10 @@ void DigitalBrain::Land(void)
     ObjectiveClass *abObj = (ObjectiveClass *)vuDatabase->Find(airbase);
     AircraftClass *leader = NULL;
     AircraftClass *component = NULL;
-    float cosAngle, heading, deltaTime, testDist, distland;
-    ulong mini, maxi;
-    float baseX, baseY, finalX, finalY, finalZ, x, y, z, dx,
-          dy, dist, speed, minSpeed, relx, rely, cosHdg, sinHdg;
+    float cosAngle = 0.0, heading = 0.0, deltaTime = 0.0, testDist = 0.0, distland = 0.0;
+    ulong mini = 0, maxi = 0;
+    float baseX = 0.0, baseY = 0.0, finalX = 0.0, finalY = 0.0, finalZ = 0.0, x = 0.0, y = 0.0, z = 0.0, dx_1 = 0.0,
+          dy_1 = 0.0, dist = 0.0, speed = 0.0, minSpeed = 0.0, relx = 0.0, rely = 0.0, cosHdg = 0.0, sinHdg = 0.0;
     mlTrig Trig;
 
     if (!abObj)
@@ -439,10 +439,10 @@ void DigitalBrain::Land(void)
                 SetTrackPoint(abXs, abYs, self->ZPos());
             }
 
-            dx = self->XPos() - trackX;
-            dy = self->YPos() - trackY;
+            dx_1 = self->XPos() - trackX;
+            dy_1 = self->YPos() - trackY;
 
-            if (dx * dx + dy * dy < 3000.0F * 3000.0F)
+            if (dx_1 * dx_1 + dy_1 * dy_1 < 3000.0F * 3000.0F)
             {
                 //for carriers we just disappear when we get close enough
                 //do carrier landings for F-18
@@ -476,8 +476,8 @@ void DigitalBrain::Land(void)
 
     SetDebugLabel(abObj);
 
-    dx = self->XPos() - trackX;
-    dy = self->YPos() - trackY;
+    dx_1 = self->XPos() - trackX;
+    dy_1 = self->YPos() - trackY;
     speed = af->MinVcas() * KNOTS_TO_FTPSEC;
 
     if (rwIndex > 0)
@@ -552,8 +552,8 @@ void DigitalBrain::Land(void)
             CalculateNextTurnDistance();
             waittimer = SimLibElapsedTime + 2 * TAKEOFF_TIME_DELTA;
             TrackPointLanding(af->CalcTASfromCAS(af->MinVcas() * 1.2F) * KNOTS_TO_FTPSEC);
-            dx = self->XPos() - abObj->XPos();
-            dy = self->YPos() - abObj->YPos();
+            dx_1 = self->XPos() - abObj->XPos();
+            dy_1 = self->YPos() - abObj->YPos();
 
             //me123
             if (
@@ -566,7 +566,7 @@ void DigitalBrain::Land(void)
                 break;
             }
 
-            if (dx * dx + dy * dy < APPROACH_RANGE * NM_TO_FT * NM_TO_FT * 0.95F)
+            if (dx_1 * dx_1 + dy_1 * dy_1 < APPROACH_RANGE * NM_TO_FT * NM_TO_FT * 0.95F)
             {
                 atcstatus = lReqClearance;
 
@@ -588,17 +588,17 @@ void DigitalBrain::Land(void)
 
             //////////////////////////////////////////////////////////////////////////////////////
         case lIngressing:
-            dx = self->XPos() - abObj->XPos();
-            dy = self->YPos() - abObj->YPos();
-            distland = sqrtf(dx * dx + dy * dy);
+            dx_1 = self->XPos() - abObj->XPos();
+            dy_1 = self->YPos() - abObj->YPos();
+            distland = sqrtf(dx_1 * dx_1 + dy_1 * dy_1);
 
             if (distland < 30.0f * NM_TO_FT)
             {
-                float tx, ty, tz;
+                float tx_1, ty_1, tz_1;
                 rwIndex = abObj->brain->FindBestLandingRunway(self, TRUE);
-                abObj->brain->FindFinalPt(self, rwIndex, &tx, &ty);
-                tz = abObj->brain->GetAltitude(self, atcstatus);
-                SetTrackPoint(tx, ty, tz);
+                abObj->brain->FindFinalPt(self, rwIndex, &tx_1, &ty_1);
+                tz_1 = abObj->brain->GetAltitude(self, atcstatus);
+                SetTrackPoint(tx_1, ty_1, tz_1);
                 CalculateNextTurnDistance();
                 atcstatus = lReqClearance;
 
@@ -630,10 +630,10 @@ void DigitalBrain::Land(void)
         case lTakingPosition:
             //need to drag out formation
             //the atc will clear us when we get within range
-            dx = self->XPos() - abObj->XPos();
-            dy = self->YPos() - abObj->YPos();
+            dx_1 = self->XPos() - abObj->XPos();
+            dy_1 = self->YPos() - abObj->YPos();
 
-            if (dx * dx + dy * dy < TOWER_RANGE * NM_TO_FT * NM_TO_FT * 0.5F && waittimer < SimLibElapsedTime)
+            if (dx_1 * dx_1 + dy_1 * dy_1 < TOWER_RANGE * NM_TO_FT * NM_TO_FT * 0.5F && waittimer < SimLibElapsedTime)
             {
                 atcstatus = lReqClearance;
 
@@ -660,9 +660,9 @@ void DigitalBrain::Land(void)
 
                 if (leader && !mpActionFlags[AI_RTB]) // JB 010527 (from MN)
                 {
-                    dx = self->XPos() - leader->XPos();
-                    dy = self->YPos() - leader->YPos();
-                    dist = dx * dx + dy * dy;
+                    dx_1 = self->XPos() - leader->XPos();
+                    dy_1 = self->YPos() - leader->YPos();
+                    dist = dx_1 * dx_1 + dy_1 * dy_1;
 
                     if (dist < NM_TO_FT * NM_TO_FT)
                         speed = af->CalcTASfromCAS(af->MinVcas()) * KNOTS_TO_FTPSEC;
@@ -671,10 +671,10 @@ void DigitalBrain::Land(void)
                 }
                 else
                 {
-                    float tx, ty, tz;
-                    abObj->brain->FindFinalPt(self, rwIndex, &tx, &ty);
-                    tz = abObj->brain->GetAltitude(self, lTakingPosition);
-                    SetTrackPoint(tx, ty, tz);
+                    float tx_1, ty_1, tz_1;
+                    abObj->brain->FindFinalPt(self, rwIndex, &tx_1, &ty_1);
+                    tz_1 = abObj->brain->GetAltitude(self, lTakingPosition);
+                    SetTrackPoint(tx_1, ty_1, tz_1);
                 }
             }
 
@@ -697,24 +697,24 @@ void DigitalBrain::Land(void)
             if (SimLibElapsedTime > waittimer)
             {
                 //we've been waiting too long, call again
-                float tx, ty, tz;
+                float tx_1, ty_1, tz_1;
                 rwIndex = abObj->brain->FindBestLandingRunway(self, TRUE);
-                abObj->brain->FindFinalPt(self, rwIndex, &tx, &ty);
-                tz = abObj->brain->GetAltitude(self, atcstatus);
+                abObj->brain->FindFinalPt(self, rwIndex, &tx_1, &ty_1);
+                tz_1 = abObj->brain->GetAltitude(self, atcstatus);
 
                 if (self->ZPos() - gAvoidZ > minZ)
                 {
-                    tz = gAvoidZ + minZ - (self->ZPos() - gAvoidZ - minZ) * 2.0f;
+                    tz_1 = gAvoidZ + minZ - (self->ZPos() - gAvoidZ - minZ) * 2.0f;
                 }
 
-                SetTrackPoint(tx, ty, tz);
+                SetTrackPoint(tx_1, ty_1, tz_1);
                 CalculateNextTurnDistance();
 
                 // JB 010802 RTBing AI aircraft won't land.
-                dx = self->XPos() - abObj->XPos();
-                dy = self->YPos() - abObj->YPos();
+                dx_1 = self->XPos() - abObj->XPos();
+                dy_1 = self->YPos() - abObj->YPos();
 
-                if (dx * dx + dy * dy < (TOWER_RANGE + 100) * NM_TO_FT * NM_TO_FT * 0.95F)
+                if (dx_1 * dx_1 + dy_1 * dy_1 < (TOWER_RANGE + 100) * NM_TO_FT * NM_TO_FT * 0.95F)
                 {
                     waittimer = SimLibElapsedTime + LAND_TIME_DELTA;
                     SendATCMsg(lReqClearance);
@@ -737,21 +737,21 @@ void DigitalBrain::Land(void)
                 trackZ = gAvoidZ + minZ - (self->ZPos() - gAvoidZ - minZ) * 2.0f;
             }
 
-            if (dx * dx + dy * dy < 0.25F * NM_TO_FT * NM_TO_FT)
+            if (dx_1 * dx_1 + dy_1 * dy_1 < 0.25F * NM_TO_FT * NM_TO_FT)
             {
-                float tx, ty, tz;
+                float tx_1, ty_1, tz_1;
                 waittimer = SimLibElapsedTime + LAND_TIME_DELTA;
                 rwIndex = abObj->brain->FindBestLandingRunway(self, TRUE);
-                abObj->brain->FindFinalPt(self, rwIndex, &tx, &ty);
-                tz = abObj->brain->GetAltitude(self, lReqClearance);
+                abObj->brain->FindFinalPt(self, rwIndex, &tx_1, &ty_1);
+                tz_1 = abObj->brain->GetAltitude(self, lReqClearance);
                 z = TheMap.GetMEA(trackX, trackY);
 
                 if (self->ZPos() - gAvoidZ > minZ)
                 {
-                    tz = gAvoidZ + minZ - (self->ZPos() - gAvoidZ - minZ) * 2.0f;
+                    tz_1 = gAvoidZ + minZ - (self->ZPos() - gAvoidZ - minZ) * 2.0f;
                 }
 
-                SetTrackPoint(tx, ty, tz);
+                SetTrackPoint(tx_1, ty_1, tz_1);
                 atcstatus = lReqClearance;
                 SendATCMsg(lReqClearance);
             }
@@ -793,10 +793,10 @@ void DigitalBrain::Land(void)
                 if (cosAngle < 0.0F)
                 {
                     abObj->brain->FindBasePt(self, rwIndex, finalX, finalY, &baseX, &baseY);
-                    float tx, ty, tz;
-                    atcstatus = abObj->brain->FindFirstLegPt(self, rwIndex, rwtime, baseX, baseY, TRUE, &tx, &ty);
-                    tz = abObj->brain->GetAltitude(self, atcstatus);
-                    SetTrackPoint(tx, ty, tz);
+                    float tx_1, ty_1, tz_1;
+                    atcstatus = abObj->brain->FindFirstLegPt(self, rwIndex, rwtime, baseX, baseY, TRUE, &tx_1, &ty_1);
+                    tz_1 = abObj->brain->GetAltitude(self, atcstatus);
+                    SetTrackPoint(tx_1, ty_1, tz_1);
 
                     if (atcstatus != lHolding)
                     {
@@ -807,12 +807,12 @@ void DigitalBrain::Land(void)
                 }
                 else
                 {
-                    float tx, ty, tz;
+                    float tx_1, ty_1, tz_1;
                     atcstatus = abObj->brain->FindFirstLegPt(
-                                    self, rwIndex, rwtime, finalX, finalY, FALSE, &tx, &ty
+                                    self, rwIndex, rwtime, finalX, finalY, FALSE, &tx_1, &ty_1
                                 );
-                    tz = abObj->brain->GetAltitude(self, atcstatus);
-                    SetTrackPoint(tx, ty, tz);
+                    tz_1 = abObj->brain->GetAltitude(self, atcstatus);
+                    SetTrackPoint(tx_1, ty_1, tz_1);
 
                     if (atcstatus != lHolding)
                     {
@@ -855,8 +855,8 @@ void DigitalBrain::Land(void)
             cosHdg = self->platformAngles.cossig;
             sinHdg = self->platformAngles.sinsig;
 
-            relx = (cosHdg * dx + sinHdg * dy);
-            rely = (-sinHdg * dx + cosHdg * dy);
+            relx = (cosHdg * dx_1 + sinHdg * dy_1);
+            rely = (-sinHdg * dx_1 + cosHdg * dy_1);
 
             if (fabs(relx) < turnDist && fabs(rely) < turnDist * 3.0F)
             {
@@ -904,8 +904,8 @@ void DigitalBrain::Land(void)
             cosHdg = self->platformAngles.cossig;
             sinHdg = self->platformAngles.sinsig;
 
-            relx = (cosHdg * dx + sinHdg * dy);
-            rely = (-sinHdg * dx + cosHdg * dy);
+            relx = (cosHdg * dx_1 + sinHdg * dy_1);
+            rely = (-sinHdg * dx_1 + cosHdg * dy_1);
 
             if (fabs(relx) < turnDist && fabs(rely) < turnDist * 3.0F)
             {
@@ -934,7 +934,7 @@ void DigitalBrain::Land(void)
             if (rwtime > SimLibElapsedTime + FINAL_TIME + BASE_TIME)
             {
                 deltaTime = (rwtime - SimLibElapsedTime - FINAL_TIME - BASE_TIME) / (float)CampaignSeconds;
-                speed = (float)sqrt(dx * dx + dy * dy) / deltaTime;
+                speed = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1) / deltaTime;
                 speed = min(af->CalcTASfromCAS(af->MaxVcas() * 0.8F) * KNOTS_TO_FTPSEC,
                             max(speed, af->CalcTASfromCAS(af->MinVcas() * 0.8F) * KNOTS_TO_FTPSEC));
             }
@@ -961,14 +961,14 @@ void DigitalBrain::Land(void)
 
             cosHdg = PtHeaderDataTable[rwIndex].cosHeading;
             sinHdg = PtHeaderDataTable[rwIndex].sinHeading;
-            relx = (cosHdg * dx + sinHdg * dy);
-            rely = (-sinHdg * dx + cosHdg * dy);
+            relx = (cosHdg * dx_1 + sinHdg * dy_1);
+            rely = (-sinHdg * dx_1 + cosHdg * dy_1);
 
             if (relx < 3.0F * NM_TO_FT && relx > -1.0F * NM_TO_FT && fabs(rely) < turnDist)
             {
                 SetTaxiPoint(GetFirstPt(rwIndex));
-                float tx, ty, tz;
-                TranslatePointData(abObj, curTaxiPoint, &tx, &ty);
+                float tx_1, ty_1, tz_1;
+                TranslatePointData(abObj, curTaxiPoint, &tx_1, &ty_1);
                 atcstatus = lOnFinal;
 
                 if (atcstatus == lEmergencyToFinal)
@@ -980,8 +980,8 @@ void DigitalBrain::Land(void)
                     atcstatus = lOnFinal;
                 }
 
-                tz = abObj->brain->GetAltitude(self, atcstatus);
-                SetTrackPoint(tx, ty, tz);
+                tz_1 = abObj->brain->GetAltitude(self, atcstatus);
+                SetTrackPoint(tx_1, ty_1, tz_1);
                 SendATCMsg(atcstatus);
                 af->gearHandle = 1.0F;
             }
@@ -989,7 +989,7 @@ void DigitalBrain::Land(void)
             if (rwtime > SimLibElapsedTime + FINAL_TIME)
             {
                 deltaTime = (rwtime - SimLibElapsedTime - FINAL_TIME) / (float)CampaignSeconds;
-                speed = (float)sqrt(dx * dx + dy * dy) / deltaTime;
+                speed = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1) / deltaTime;
                 speed = min(af->CalcTASfromCAS(af->MaxVcas() * 0.8F) * KNOTS_TO_FTPSEC,
                             max(speed, af->CalcTASfromCAS(af->MinVcas() * 0.8F) * KNOTS_TO_FTPSEC));
             }
@@ -1014,10 +1014,10 @@ void DigitalBrain::Land(void)
                 SetATCFlag(Landed);
                 int fp = GetFirstPt(rwIndex);
                 SetTaxiPoint(GetNextPtLoop(fp));
-                float tx, ty, tz;
-                TranslatePointData(abObj, curTaxiPoint, &tx, &ty);
-                tz = af->groundZ;
-                SetTrackPoint(tx, ty, tz);
+                float tx_1, ty_1, tz_1;
+                TranslatePointData(abObj, curTaxiPoint, &tx_1, &ty_1);
+                tz_1 = af->groundZ;
+                SetTrackPoint(tx_1, ty_1, tz_1);
                 SimpleGroundTrack(100.0F * KNOTS_TO_FTPSEC);
                 break;
             }
@@ -1036,17 +1036,17 @@ void DigitalBrain::Land(void)
             if (cosAngle > 0.0F && af->groundZ - self->ZPos() > 50.0F)
             {
                 SetTaxiPoint(GetFirstPt(rwIndex));
-                float tx, ty;
-                TranslatePointData(abObj, curTaxiPoint, &tx, &ty);
-                SetTrackPoint(tx, ty);
+                float tx_1, ty_1;
+                TranslatePointData(abObj, curTaxiPoint, &tx_1, &ty_1);
+                SetTrackPoint(tx_1, ty_1);
 
                 //until chris moves the landing points
                 //trackX -= 500.0F * PtHeaderDataTable[rwIndex].cosHeading;
                 //trackY -= 500.0F * PtHeaderDataTable[rwIndex].sinHeading;
 
-                dx = trackX - self->XPos();
-                dy = trackY - self->YPos();
-                dist = (float)sqrt(dx * dx + dy * dy);
+                dx_1 = trackX - self->XPos();
+                dy_1 = trackY - self->YPos();
+                dist = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
 
                 //decelerate as we approach
                 minSpeed = af->CalcTASfromCAS(af->MinVcas()) * KNOTS_TO_FTPSEC;
@@ -1112,13 +1112,13 @@ void DigitalBrain::Land(void)
             }
             else
             {
-                float tx, ty, tz;
+                float tx_1, ty_1, tz_1;
                 //flare at the last minute so we hit softly
                 int fp = GetFirstPt(rwIndex);
                 SetTaxiPoint(GetNextPt(fp));
-                TranslatePointData(abObj, curTaxiPoint, &tx, &ty);
-                tz = abObj->brain->GetAltitude(self, atcstatus);
-                SetTrackPoint(tx, ty, tz);
+                TranslatePointData(abObj, curTaxiPoint, &tx_1, &ty_1);
+                tz_1 = abObj->brain->GetAltitude(self, atcstatus);
+                SetTrackPoint(tx_1, ty_1, tz_1);
                 TrackPointLanding(af->GetLandingAoASpd());
                 pStick = - 0.01685393258427F;
             }
@@ -1134,7 +1134,7 @@ void DigitalBrain::Land(void)
             {
                 ShiWarning("Please show this to Dave P (x4373)");
 
-                float rx = self->dmx[0][0] * dx + self->dmx[0][1] * dy;
+                float rx = self->dmx[0][0] * dx_1 + self->dmx[0][1] * dy_1;
 
                 if (rx > 3000.0F && af->IsSet(AirframeClass::OverRunway))
                 {
@@ -1148,9 +1148,9 @@ void DigitalBrain::Land(void)
                 {
                     atcstatus = lAborted;
                     SendATCMsg(atcstatus);
-                    float tx, ty, tz;
-                    abObj->brain->FindAbortPt(self, &tx, &ty, &tz);
-                    SetTrackPoint(tx, ty, tz);
+                    float tx_1, ty_1, tz_1;
+                    abObj->brain->FindAbortPt(self, &tx_1, &ty_1, &tz_1);
+                    SetTrackPoint(tx_1, ty_1, tz_1);
                     TrackPoint(0.0F, af->MinVcas() * 1.2F * KNOTS_TO_FTPSEC);
                     af->gearHandle = -1.0F;
                 }
@@ -1183,9 +1183,9 @@ void DigitalBrain::Land(void)
                         break;
                 }
 
-                float tx, ty, tz = af->groundZ;
-                TranslatePointData(abObj, curTaxiPoint, &tx, &ty);
-                SetTrackPoint(tx, ty, tz);
+                float tx_1, ty_1, tz_1 = af->groundZ;
+                TranslatePointData(abObj, curTaxiPoint, &tx_1, &ty_1);
+                SetTrackPoint(tx_1, ty_1, tz_1);
             }
 
             inTheWay = CheckTaxiTrackPoint();
@@ -1236,18 +1236,18 @@ void DigitalBrain::Land(void)
                     af->LEFClose();
             }
 
-            dx = trackX - af->x;
-            dy = trackY - af->y;
+            dx_1 = trackX - af->x;
+            dy_1 = trackY - af->y;
 
-            if (dx * dx + dy * dy > 1500.0F * 1500.0F)
+            if (dx_1 * dx_1 + dy_1 * dy_1 > 1500.0F * 1500.0F)
             {
                 SimpleGroundTrack(min(60.0F * KNOTS_TO_FTPSEC, af->MinVcas() * 0.4F)); //THW 2003-11-23 No hurry...no need to re-accelerate
             }
-            else if (dx * dx + dy * dy > 500.0F * 500.0F) //THW 2003-11-23 Slow down
+            else if (dx_1 * dx_1 + dy_1 * dy_1 > 500.0F * 500.0F) //THW 2003-11-23 Slow down
             {
                 SimpleGroundTrack(min(50.0F * KNOTS_TO_FTPSEC, af->MinVcas() * 0.3F));
             }
-            else if (dx * dx + dy * dy > 200.0F * 200.0F) //THW 2003-11-23 Slow down
+            else if (dx_1 * dx_1 + dy_1 * dy_1 > 200.0F * 200.0F) //THW 2003-11-23 Slow down
             {
                 SimpleGroundTrack(35.0F * KNOTS_TO_FTPSEC);
             }
@@ -1259,7 +1259,7 @@ void DigitalBrain::Land(void)
             if (g_nShowDebugLabels) //THW 2003-11-23 Some debug stuff to observe landing deccelaration behaviour
             {
                 char label [96];
-                sprintf(label, "Speed: %d kts, PointDist: %d ft", FloatToInt32(self->GetVt() / KNOTS_TO_FTPSEC), FloatToInt32(sqrt(dx * dx + dy * dy)));
+                sprintf(label, "Speed: %d kts, PointDist: %d ft", FloatToInt32(self->GetVt() / KNOTS_TO_FTPSEC), FloatToInt32(sqrt(dx_1 * dx_1 + dy_1 * dy_1)));
 
                 if (self->drawPointer)
                     ((DrawableBSP*)self->drawPointer)->SetLabel(label, ((DrawableBSP*)self->drawPointer)->LabelColor());
@@ -1278,16 +1278,16 @@ void DigitalBrain::Land(void)
                     waittimer = SimLibElapsedTime + g_nReagTimer * CampaignMinutes;
                 }
 
-                dx = trackX - af->x;
-                dy = trackY - af->y;
+                dx_1 = trackX - af->x;
+                dy_1 = trackY - af->y;
 
-                if (dx * dx + dy * dy < 10 * 10)
+                if (dx_1 * dx_1 + dy_1 * dy_1 < 10 * 10)
                 {
                     desiredSpeed = 0.0F;
                 }
                 else
                 {
-                    desiredSpeed = 20.0F * KNOTS_TO_FTPSEC * (float)sqrt(dx * dx + dy * dy) / TAXI_CHECK_DIST;
+                    desiredSpeed = 20.0F * KNOTS_TO_FTPSEC * (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1) / TAXI_CHECK_DIST;
                 }
 
                 desiredSpeed = min(20.0F * KNOTS_TO_FTPSEC, desiredSpeed);
@@ -1362,9 +1362,9 @@ void DigitalBrain::Land(void)
                         break;
                 }
 
-                float tx, ty, tz = af->groundZ;
-                TranslatePointData(abObj, curTaxiPoint, &tx, &ty);
-                SetTrackPoint(tx, ty, tz);
+                float tx_1, ty_1, tz_1 = af->groundZ;
+                TranslatePointData(abObj, curTaxiPoint, &tx_1, &ty_1);
+                SetTrackPoint(tx_1, ty_1, tz_1);
                 desiredSpeed = 20.0F * KNOTS_TO_FTPSEC;
             }
             else
@@ -1383,9 +1383,9 @@ void DigitalBrain::Land(void)
                         if (PtDataTable[curTaxiPoint].flags != PT_LAST)
                         {
                             FindParkingSpot(abObj); // try again
-                            float tx, ty;
-                            TranslatePointData(abObj, curTaxiPoint, &tx, &ty);
-                            SetTrackPoint(tx, ty);
+                            float tx_1, ty_1;
+                            TranslatePointData(abObj, curTaxiPoint, &tx_1, &ty_1);
+                            SetTrackPoint(tx_1, ty_1);
                             break;
                         }
 
@@ -1399,9 +1399,9 @@ void DigitalBrain::Land(void)
                               (PtDataTable[((AircraftClass*)inTheWay)->DBrain()->GetTaxiPoint()].type == SmallParkPt)))
                         )
                         {
-                            float tx, ty;
-                            TranslatePointData(abObj, curTaxiPoint, &tx, &ty);
-                            SetTrackPoint(tx, ty);
+                            float tx_1, ty_1;
+                            TranslatePointData(abObj, curTaxiPoint, &tx_1, &ty_1);
+                            SetTrackPoint(tx_1, ty_1);
                         }
                         else
                         {
@@ -2420,7 +2420,6 @@ void DigitalBrain::TakeOff()
                 if (elemleader) // is #3 in a 4- and 3-ship flight, #2 in a 2-ship flight
                 {
                     airbase = self->LandingAirbase(); // JPO - now we set to go home
-                    ObjectiveClass *Airbase = (ObjectiveClass *)vuDatabase->Find(airbase);
 
                     if (!Airbase || elemleader->af->z - elemleader->af->groundZ < -50.0F) // #3 has taken off -> lead continue to next WP
                     {
@@ -2435,8 +2434,8 @@ void DigitalBrain::TakeOff()
                         // #1 and #2 do a takeoff leg - find direction to next waypoint
 
                         int dir;
-                        float tx, ty, dx, dy, dz, dist;
-                        float deltaHdg, hdgToPt, acHeading, legHeading;
+                        float tx = 0.0, ty = 0.0, dx_1 = 0.0, dy_1 = 0.0, dz_1 = 0.0, dist = 0.0;
+                        float deltaHdg = 0.0, hdgToPt = 0.0, acHeading = 0.0, legHeading = 0.0;
 
                         acHeading = self->Yaw(); // fix, use aircrafts real heading instead of runway heading
 
@@ -2449,10 +2448,10 @@ void DigitalBrain::TakeOff()
                             // a failed assertion tmpWaypoint = tmpWaypoint->GetPrevWP();
 
                             tmpWaypoint = tmpWaypoint->GetNextWP();
-                            tmpWaypoint->GetLocation(&dx, &dy, &dz);
+                            tmpWaypoint->GetLocation(&dx_1, &dy_1, &dz_1);
 
-                            tx = dx - Airbase->XPos();
-                            ty = dy - Airbase->YPos();
+                            tx = dx_1 - Airbase->XPos();
+                            ty = dy_1 - Airbase->YPos();
                             hdgToPt = (float)atan2(ty, tx);
 
                             if (hdgToPt < 0.0F)
@@ -2516,10 +2515,10 @@ void DigitalBrain::TakeOff()
 
                             // Set up a new trackpoint
 
-                            dx = Airbase->XPos() + dist * cos(legHeading);
-                            dy = Airbase->YPos() + dist * sin(legHeading);
+                            dx_1 = Airbase->XPos() + dist * cos(legHeading);
+                            dy_1 = Airbase->YPos() + dist * sin(legHeading);
 
-                            SetTrackPoint(dx, dy, -2000.0F + af->groundZ);
+                            SetTrackPoint(dx_1, dy_1, -2000.0F + af->groundZ);
 
                             SetMaxRollDelta(75.0F); // don't roll too much
                             SimpleTrack(SimpleTrackSpd, (af->MinVcas() * 1.2f)); // fly as slow as possible ~ 178 kts
@@ -3088,9 +3087,9 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
                 if (WingmanTakeRunway(Airbase, (AircraftClass*)flightLead, leader))
                 {
                     SetTaxiPoint(GetPrevPtLoop(curTaxiPoint));
-                    float tx, ty;
-                    TranslatePointData(Airbase, curTaxiPoint, &tx, &ty);
-                    SetTrackPoint(tx, ty);
+                    float tx_1, ty_1;
+                    TranslatePointData(Airbase, curTaxiPoint, &tx_1, &ty_1);
+                    SetTrackPoint(tx_1, ty_1);
                     CalculateTaxiSpeed(MoveAlong);
                     // waittimer = CalcWaitTime(Airbase->brain);
                     waittimer = 0;
@@ -3107,9 +3106,9 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
                 else if (!Airbase->brain->IsOnRunway(GetPrevPtLoop(GetPrevPtLoop(curTaxiPoint))))
                 {
                     SetTaxiPoint(GetPrevPtLoop(GetPrevPtLoop(curTaxiPoint)));
-                    float tx, ty;
-                    TranslatePointData(Airbase, curTaxiPoint, &tx, &ty);
-                    SetTrackPoint(tx, ty);
+                    float tx_1, ty_1;
+                    TranslatePointData(Airbase, curTaxiPoint, &tx_1, &ty_1);
+                    SetTrackPoint(tx_1, ty_1);
                     CalculateTaxiSpeed(HurryUp);  // FRB - he is already at least 2 taxipts behind
                     // waittimer = CalcWaitTime(Airbase->brain);  // <<-- not long
                     waittimer = 0;
@@ -3122,11 +3121,11 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
             }
             else if (IsSetATC(PermitRunway) && !self->IsSetFalcFlag(FEC_HOLDSHORT))
             {
-                float tx, ty;
+                float tx_1, ty_1;
                 atcstatus = tTakeRunway;
                 SetTaxiPoint(GetPrevPtLoop(curTaxiPoint));
-                TranslatePointData(Airbase, curTaxiPoint, &tx, &ty);
-                SetTrackPoint(tx, ty);
+                TranslatePointData(Airbase, curTaxiPoint, &tx_1, &ty_1);
+                SetTrackPoint(tx_1, ty_1);
                 CalculateTaxiSpeed(MoveAlong);
                 waittimer = CalcWaitTime(Airbase->brain);
                 // waittimer = 0;
@@ -3151,9 +3150,9 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
             {
                 SetATCFlag(PermitTakeRunway);
                 SetTaxiPoint(GetPrevPtLoop(curTaxiPoint));
-                float tx, ty;
-                TranslatePointData(Airbase, curTaxiPoint, &tx, &ty);
-                SetTrackPoint(tx, ty);
+                float tx_1, ty_1;
+                TranslatePointData(Airbase, curTaxiPoint, &tx_1, &ty_1);
+                SetTrackPoint(tx_1, ty_1);
                 //CalculateTaxiSpeed(MoveAlong);
                 CalculateTaxiSpeed(HurryUp);    // 17JAN04 - FRB - expedite takeoff
 
@@ -3169,9 +3168,9 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
             else if (!Airbase->brain->IsOnRunway(GetPrevPtLoop(GetPrevPtLoop(curTaxiPoint))))
             {
                 SetTaxiPoint(GetPrevPtLoop(GetPrevPtLoop(curTaxiPoint)));
-                float tx, ty;
-                TranslatePointData(Airbase, curTaxiPoint, &tx, &ty);
-                SetTrackPoint(tx, ty);
+                float tx_1, ty_1;
+                TranslatePointData(Airbase, curTaxiPoint, &tx_1, &ty_1);
+                SetTrackPoint(tx_1, ty_1);
                 CalculateTaxiSpeed(HurryUp);
                 //waittimer = CalcWaitTime(Airbase->brain);  // <<-- not long
                 waittimer = 0;
@@ -3200,13 +3199,13 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
             {
                 if (WingmanTakeRunway(Airbase, (AircraftClass*)flightLead, leader))
                 {
-                    float tx, ty;
+                    float tx_1, ty_1;
                     SetTaxiPoint(
                         Airbase->brain->FindTakeoffPt(
-                            (Flight)self->GetCampaignObject(), self->vehicleInUnit, rwIndex, &tx, &ty
+                            (Flight)self->GetCampaignObject(), self->vehicleInUnit, rwIndex, &tx_1, &ty_1
                         )
                     );
-                    SetTrackPoint(tx, ty);
+                    SetTrackPoint(tx_1, ty_1);
                     //CalculateTaxiSpeed(MoveAlong);
                     CalculateTaxiSpeed(HurryUp);    // 17JAN04 - FRB - expedite takeoff
 
@@ -3229,13 +3228,13 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
             else if (IsSetATC(PermitRunway) && !self->IsSetFalcFlag(FEC_HOLDSHORT))
             {
                 SetATCFlag(PermitRunway);
-                float tx, ty;
+                float tx_1, ty_1;
                 SetTaxiPoint(
                     Airbase->brain->FindTakeoffPt(
-                        (Flight)self->GetCampaignObject(), self->vehicleInUnit, rwIndex, &tx, &ty
+                        (Flight)self->GetCampaignObject(), self->vehicleInUnit, rwIndex, &tx_1, &ty_1
                     )
                 );
-                SetTrackPoint(tx, ty);
+                SetTrackPoint(tx_1, ty_1);
                 CalculateTaxiSpeed(MoveAlong);
 
                 //CalculateTaxiSpeed(HurryUp);    // 17JAN04 - FRB - expedite takeoff
@@ -3302,13 +3301,13 @@ void DigitalBrain::ChooseNextPoint(ObjectiveClass *Airbase)  // to Runway  Takeo
                 atcstatus = tTakeRunway;
             }
 
-            float tx, ty;
+            float tx_1, ty_1;
             SetTaxiPoint(
                 Airbase->brain->FindRunwayPt(
-                    (Flight)self->GetCampaignObject(), self->vehicleInUnit, rwIndex, &tx, &ty
+                    (Flight)self->GetCampaignObject(), self->vehicleInUnit, rwIndex, &tx_1, &ty_1
                 )
             );
-            SetTrackPoint(tx, ty);
+            SetTrackPoint(tx_1, ty_1);
             desiredSpeed = 30.0F * KNOTS_TO_FTPSEC;
             //waittimer = CalcWaitTime(Airbase->brain);  // FRB - do we have to wait?
             waittimer = 0;
@@ -3466,9 +3465,9 @@ float DigitalBrain::CalculateTaxiSpeed(float time)  // to T/O  Need to fix TaxiP
 
     ShiAssert(Airbase);
 
-    float prevX, prevY, dx, dy;
+    float prevX = 0.0, prevY = 0.0, dx_1 = 0.0, dy_1 = 0.0;
     //float nextX, nextY;
-    int point;
+    int point = 0;
     // point = GetNextPt(curTaxiPoint);
     point = GetNextTaxiPt(curTaxiPoint); // 07JAN04 - FRB - Get *taxi* point we are at now
 
@@ -3478,11 +3477,11 @@ float DigitalBrain::CalculateTaxiSpeed(float time)  // to T/O  Need to fix TaxiP
         TranslatePointData(Airbase, point, &prevX, &prevY);
         //dx = prevX - nextX;
         //dy = prevY - nextY;
-        dx = prevX - trackX;
-        dy = prevY - trackY;
+        dx_1 = prevX - trackX;
+        dy_1 = prevY - trackY;
 
         //how fast do we go to cover the distance in (time) seconds?
-        desiredSpeed = (float)sqrt(dx * dx + dy * dy) / time;
+        desiredSpeed = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1) / time;
 
         ShiAssert(!_isnan(desiredSpeed))
     }
@@ -3498,7 +3497,7 @@ float DigitalBrain::CalculateTaxiSpeed(float time)  // to T/O  Need to fix TaxiP
 
 void DigitalBrain::OffsetTrackPoint(float offDist, int dir)
 {
-    float dx = 0.0F, dy = 0.0F, dist = 0.0F, relx = 0.0F, x1 = 0.0F, y1 = 0.0F;
+    float dx_1 = 0.0F, dy_1 = 0.0F, dist = 0.0F, relx = 0.0F, x1 = 0.0F, y1 = 0.0F;
     float cosHdg = 1.0F, sinHdg = 0.0F;
     int point = 0;
     float tmpX = 0.0F, tmpY = 0.0F;
@@ -3518,11 +3517,11 @@ void DigitalBrain::OffsetTrackPoint(float offDist, int dir)
             x1 = runwayStats[queue].centerX;
             y1 = runwayStats[queue].centerY;
 
-            dx = x1 - self->XPos();
-            dy = y1 - self->YPos();
+            dx_1 = x1 - self->XPos();
+            dy_1 = y1 - self->YPos();
 
-            relx = (PtHeaderDataTable[rwIndex].cosHeading * dx +
-                    PtHeaderDataTable[rwIndex].sinHeading * dy);
+            relx = (PtHeaderDataTable[rwIndex].cosHeading * dx_1 +
+                    PtHeaderDataTable[rwIndex].sinHeading * dy_1);
 
             relx = max(min(relx, length - TAXI_CHECK_DIST), 0.0F);
 
@@ -3535,31 +3534,31 @@ void DigitalBrain::OffsetTrackPoint(float offDist, int dir)
         return;
     }
 
-    dx = trackX - self->XPos();
-    dy = trackY - self->YPos();
-    dist = (float)sqrt(dx * dx + dy * dy);
+    dx_1 = trackX - self->XPos();
+    dy_1 = trackY - self->YPos();
+    dist = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
 
     //these are cos and sin of hdg to offset point along
     switch (dir)
     {
         case offForward: //forward
-            cosHdg = dx / dist;
-            sinHdg = dy / dist;
+            cosHdg = dx_1 / dist;
+            sinHdg = dy_1 / dist;
             break;
 
         case offRight: //right
-            cosHdg = -dy / dist;
-            sinHdg = dx / dist;
+            cosHdg = -dy_1 / dist;
+            sinHdg = dx_1 / dist;
             break;
 
         case offBack: //back
-            cosHdg = -dx / dist;
-            sinHdg = -dy / dist;
+            cosHdg = -dx_1 / dist;
+            sinHdg = -dy_1 / dist;
             break;
 
         case offLeft: //left
-            cosHdg = dy / dist;
-            sinHdg = -dx / dist;
+            cosHdg = dy_1 / dist;
+            sinHdg = -dx_1 / dist;
             break;
 
         case downRunway:
@@ -3589,11 +3588,11 @@ void DigitalBrain::OffsetTrackPoint(float offDist, int dir)
             {
                 point = GetPrevPtLoop(curTaxiPoint);
                 TranslatePointData(Airbase, point, &tmpX, &tmpY);
-                dx = tmpX - trackX;
-                dy = tmpY - trackY;
-                dist = (float)sqrt(dx * dx + dy * dy);
-                cosHdg = dy / dist;
-                sinHdg = -dx / dist;
+                dx_1 = tmpX - trackX;
+                dy_1 = tmpY - trackY;
+                dist = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
+                cosHdg = dy_1 / dist;
+                sinHdg = -dx_1 / dist;
             }
 
             break;
@@ -3609,11 +3608,11 @@ void DigitalBrain::OffsetTrackPoint(float offDist, int dir)
                     point = GetPrevPtLoop(curTaxiPoint);
 
                 TranslatePointData(Airbase, point, &tmpX, &tmpY);
-                dx = tmpX - trackX;
-                dy = tmpY - trackY;
-                dist = (float)sqrt(dx * dx + dy * dy);
-                cosHdg = -dy / dist;
-                sinHdg = dx / dist;
+                dx_1 = tmpX - trackX;
+                dy_1 = tmpY - trackY;
+                dist = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
+                cosHdg = -dy_1 / dist;
+                sinHdg = dx_1 / dist;
             }
 
             break;
@@ -4337,8 +4336,8 @@ void DigitalBrain::UpdateTaxipoint(void)  // Called by Airframe.cpp, AircraftInp
         return;
 
     ObjectiveClass *Airbase = (ObjectiveClass *)vuDatabase->Find(airbase);
-    float tmpX, tmpY, dx, dy, dist, closestDist =  4000000.0F;
-    int taxiPoint, i, closest = curTaxiPoint;
+    float tmpX = 0.0, tmpY = 0.0, dx_1 = 0.0, dy_1 = 0.0, dist = 0.0, closestDist =  4000000.0F;
+    int taxiPoint = 0, i = 0, closest = curTaxiPoint;
 
     // SetDebugLabel(Airbase);
 
@@ -4350,9 +4349,9 @@ void DigitalBrain::UpdateTaxipoint(void)  // Called by Airframe.cpp, AircraftInp
     for (i = 0; i < 3; i++)
     {
         TranslatePointData(Airbase, taxiPoint, &tmpX, &tmpY);
-        dx = tmpX - af->x;
-        dy = tmpY - af->y;
-        dist = dx * dx + dy * dy;
+        dx_1 = tmpX - af->x;
+        dy_1 = tmpY - af->y;
+        dist = dx_1 * dx_1 + dy_1 * dy_1;
 
         if (dist < closestDist)
         {

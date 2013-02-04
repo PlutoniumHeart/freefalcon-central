@@ -1219,8 +1219,6 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
     }
     else if (hint == AI_TAKEOFF)   // JPO take the hint!
     {
-        short edata[10];
-
         edata[0] = ((FlightClass*) self->GetCampaignObject())->GetComponentIndex(self);
         edata[1] = -1;
         edata[2] = -1;

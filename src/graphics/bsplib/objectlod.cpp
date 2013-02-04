@@ -131,7 +131,9 @@ void ObjectLOD::SetupTable(int file, char *basename)
     //result = read( file, TheObjectLODs, sizeof(*TheObjectLODs)*TheObjectLODsCount );
 
     // Open the data file we'll read from at run time as object LODs are required
-    strcpy(filename, basename);
+	if(strlen(basename) > sizeof filename)
+		return;
+    strcpy_s(filename, sizeof(filename), basename);
     strcat(filename, ".DXL");
 
     if (!ObjectLodMap.Open(filename, FALSE, !g_bUseMappedFiles))

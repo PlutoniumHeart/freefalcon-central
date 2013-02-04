@@ -620,6 +620,9 @@ void StateStackClass::PushAll(void)
 {
     ShiAssert(stackDepth < MAX_STATE_STACK_DEPTH);
 
+	if(stackDepth >= MAX_STATE_STACK_DEPTH)
+		return;
+
     stack[stackDepth].XformedPosPool = XformedPosPool;
     stack[stackDepth].IntensityPool = IntensityPool;
     stack[stackDepth].ClipInfoPool = ClipInfoPool;
@@ -673,6 +676,9 @@ void StateStackClass::PopAll(void)
 void StateStackClass::PushVerts(void)
 {
     ShiAssert(stackDepth < MAX_STATE_STACK_DEPTH);
+
+	if(stackDepth >= MAX_STATE_STACK_DEPTH)
+		return;
 
     stack[stackDepth].XformedPosPool = XformedPosPool;
     stack[stackDepth].IntensityPool = IntensityPool;

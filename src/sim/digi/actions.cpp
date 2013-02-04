@@ -373,21 +373,20 @@ void DigitalBrain::Actions(void)
 
         if (g_nShowDebugLabels & 0x40)
         {
-            RadarClass* theRadar = (RadarClass*)FindSensor(self, SensorClass::Radar);
-
             if (theRadar)
             {
-                if (theRadar->digiRadarMode = RadarClass::DigiSTT)
+                if (theRadar->digiRadarMode == RadarClass::DigiSTT)
                     strcat(label, " STT");
-                else if (theRadar->digiRadarMode = RadarClass::DigiSAM)
+                else if (theRadar->digiRadarMode == RadarClass::DigiSAM)
                     strcat(label, " SAM");
-                else if (theRadar->digiRadarMode = RadarClass::DigiTWS)
+                else if (theRadar->digiRadarMode == RadarClass::DigiTWS)
                     strcat(label, " TWS");
-                else if (theRadar->digiRadarMode = RadarClass::DigiRWS)
+                else if (theRadar->digiRadarMode == RadarClass::DigiRWS)
                     strcat(label, " RWS");
-                else if (theRadar->digiRadarMode = RadarClass::DigiOFF)
+                else if (theRadar->digiRadarMode == RadarClass::DigiOFF)
                     strcat(label, " OFF");
-                else strcat(label, " UNKNOWN");
+                else 
+					strcat(label, " UNKNOWN");
             }
         }
 
@@ -438,7 +437,7 @@ void DigitalBrain::Actions(void)
 
     if (g_nShowDebugLabels & 0x800000)
     {
-        sprintf(label, "0x%x leader: 0x%x", self, flightLead);
+        sprintf(label, "0x%x leader: 0x%x", *self, *flightLead);
 
         if (self->drawPointer)
             ((DrawableBSP*)self->drawPointer)->SetLabel(label, ((DrawableBSP*)self->drawPointer)->LabelColor());

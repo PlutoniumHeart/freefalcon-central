@@ -568,7 +568,7 @@ void TankerBrain::DriveBoom(void)
 {
     float tmpAz, tmpRange, tempEl, rad;
 
-    FalconTankerMessage *tankMsg;
+    FalconTankerMessage *tankMsg = NULL;
 
     // 29NOV03 - FRB
     // Type of refueling required by this aircraft?
@@ -795,8 +795,6 @@ void TankerBrain::DriveBoom(void)
             else
             {
                 PurgeWaitQ();
-                FalconTankerMessage *tankMsg;
-
                 tankMsg = new FalconTankerMessage(self->Id(), FalconLocalGame);
                 tankMsg->dataBlock.caller = curThirsty->Id();
                 tankMsg->dataBlock.type = FalconTankerMessage::PositionUpdate;
@@ -999,8 +997,6 @@ void TankerBrain::DriveBoom(void)
         else
         {
             PurgeWaitQ();
-            FalconTankerMessage *tankMsg;
-
             tankMsg = new FalconTankerMessage(self->Id(), FalconLocalGame);
             tankMsg->dataBlock.caller = curThirsty->Id();
             tankMsg->dataBlock.type = FalconTankerMessage::PositionUpdate;
@@ -1247,15 +1243,15 @@ void TankerBrain::BreakAway(void)
 void TankerBrain::TurnTo(float newHeading)
 {
     // M.N. 2001-11-28
-    float dist, dx, dy;
+    float dist, dx_1, dy_1;
 
     // Set up new trackpoint
     dist = 200.0F * NM_TO_FT;
 
-    dx = self->XPos() + dist * sin(newHeading);
-    dy = self->YPos() + dist * cos(newHeading);
+    dx_1 = self->XPos() + dist * sin(newHeading);
+    dy_1 = self->YPos() + dist * cos(newHeading);
 
-    SetTrackPoint(dx, dy);
+    SetTrackPoint(dx_1, dy_1);
 }
 
 void TankerBrain::TurnToTrackPoint(int trackPoint)
@@ -1277,11 +1273,8 @@ void TankerBrain::FollowThirsty(void)
         if (tankingPtr)
             tankingPtr->Release();
 
-#ifdef DEBUG
-        //tankingPtr = new SimObjectType( OBJ_TAG, self, curThirsty );
-#else
         tankingPtr = new SimObjectType(curThirsty);
-#endif
+
         tankingPtr->Reference();
         dist = DistanceToFront(SimToGrid(self->YPos()), SimToGrid(self->XPos()));
 
@@ -1831,7 +1824,7 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
 
                  check if we go from TP 0 to TP 3 or from TP 0 to TP 1
                 */
-                float dist, dx, dy, longleg, shortleg, heading, distance;
+                float dist = 0.0, dx_1 = 0.0, dy_1 = 0.0, longleg = 0.0, shortleg = 0.0, heading = 0.0, distance = 0.0;
                 bool boxside = false;
                 int farthercloser = 0;
 
@@ -1954,11 +1947,11 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
                 // TrackPoint[1], initial direction
                 dist = shortleg * NM_TO_FT;
 
-                dx = TrackPoints[0].x + dist * cos(heading);
-                dy = TrackPoints[0].y + dist * sin(heading);
+                dx_1 = TrackPoints[0].x + dist * cos(heading);
+                dy_1 = TrackPoints[0].y + dist * sin(heading);
 
-                TrackPoints[1].x = dx;
-                TrackPoints[1].y = dy;
+                TrackPoints[1].x = dx_1;
+                TrackPoints[1].y = dy_1;
 
                 // TrackPoint[2] add 90° heading
                 if (boxside)
@@ -1984,11 +1977,11 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
 
                 dist = longleg * NM_TO_FT;
 
-                dx = TrackPoints[1].x + dist * cos(heading);
-                dy = TrackPoints[1].y + dist * sin(heading);
+                dx_1 = TrackPoints[1].x + dist * cos(heading);
+                dy_1 = TrackPoints[1].y + dist * sin(heading);
 
-                TrackPoints[2].x = dx;
-                TrackPoints[2].y = dy;
+                TrackPoints[2].x = dx_1;
+                TrackPoints[2].y = dy_1;
 
                 // TrackPoint[3] add another 90° heading
                 if (boxside)
@@ -2014,11 +2007,11 @@ void TankerBrain::FrameExec(SimObjectType* tList, SimObjectType* tPtr)
 
                 dist = shortleg * NM_TO_FT;
 
-                dx = TrackPoints[2].x + dist * cos(heading);
-                dy = TrackPoints[2].y + dist * sin(heading);
+                dx_1 = TrackPoints[2].x + dist * cos(heading);
+                dy_1 = TrackPoints[2].y + dist * sin(heading);
 
-                TrackPoints[3].x = dx;
-                TrackPoints[3].y = dy;
+                TrackPoints[3].x = dx_1;
+                TrackPoints[3].y = dy_1;
                 /*
                  if (boxside)
                  {

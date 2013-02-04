@@ -15,11 +15,11 @@ void DigitalBrain::CollisionCheck(void)
     float hRange    = 200.0F; /* range to miss a hostile tgt / fireball */
     float hRangeSq = 40000.0F; /* square of hRange */
     float reactFact = 0.55F; /* fudge factor for reaction time *///me123 from .75
-    float timeToImpact, rngSq, dt, pastRngSq;
-    float ox, oy, oz, tx, ty, tz;
-    int    collision;
-    Falcon4EntityClassType* classPtr;
-    SimObjectLocalData* localData;
+    float timeToImpact = 0.0, rngSq = 0.0, dt = 0.0, pastRngSq = 0.0;
+    float ox = 0.0, oy = 0.0, oz = 0.0, tx = 0.0, ty = 0.0, tz = 0.0;
+    int    collision = 0;
+    Falcon4EntityClassType* classPtr = NULL;
+    SimObjectLocalData* localData = NULL;
 
     if (!targetPtr)
     {
@@ -123,9 +123,9 @@ void DigitalBrain::CollisionCheck(void)
 
                 range  = 10000.0F;
 
-                float tx, ty, tz;
-                GetXYZ(self, relAz, relEl, range, &tx, &ty, &tz);
-                SetTrackPoint(tx, ty, tz);
+                float tx_1, ty_1, tz_1;
+                GetXYZ(self, relAz, relEl, range, &tx_1, &ty_1, &tz_1);
+                SetTrackPoint(tx_1, ty_1, tz_1);
             }
 
             AddMode(CollisionAvoidMode);

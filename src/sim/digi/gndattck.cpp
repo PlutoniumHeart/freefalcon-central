@@ -98,16 +98,16 @@ void DigitalBrain::GroundAttackMode(void)
     FireControlComputer* FCC = self->FCC;
     SMSClass* Sms = self->Sms;
     RadarClass* theRadar = (RadarClass*) FindSensor(self, SensorClass::Radar);
-    BombClass* theBomb;
-    float approxRange, approxSlantRange, dx, dy;
+    BombClass* theBomb = NULL;
+    float approxRange = 0.0, approxSlantRange = 0.0, dx_1 = 0.0, dy_1 = 0.0;
     approxSlantRange = 0;
-    float pitchDesired;
-    float  desSpeed;
-    float xft, yft, zft;
-    float rx, ata, ry;
+    float pitchDesired = 0.0;
+    float  desSpeed = 0.0;
+    float xft = 0.0, yft = 0.0, zft = 0.0;
+    float rx = 0.0, ata = 0.0, ry = 0.0;
     BOOL shootMissile;
     BOOL diveOK;
-    float curGroundAlt;
+    float curGroundAlt = 0.0;
 
     // COBRA - RED - FIXING CTDs, u CAN NOT CAST what may not be a Bomb, more, u can not cast IF NO HP SELECTED..!!!
     // theBomb = (BombClass*)Sms->hardPoint[Sms->GetCurrentHardpoint()]->weaponPointer;
@@ -170,9 +170,9 @@ void DigitalBrain::GroundAttackMode(void)
             trackY = groundTargetPtr->BaseData()->YPos();
         }
 
-        dx = (self->XPos() - trackX);
-        dy = (self->YPos() - trackY);
-        approxRange = (float)sqrt(dx * dx + dy * dy);
+        dx_1 = (self->XPos() - trackX);
+        dy_1 = (self->YPos() - trackY);
+        approxRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
         FireRocket(approxRange, 0.0f);
         return;
     }
@@ -616,9 +616,9 @@ DownwindBypass:
             // track to insertion point
             SetTrackPoint(ipX, ipY, AGattackAlt);
 
-            dx = (float)fabs(self->XPos() - trackX);
-            dy = (float)fabs(self->YPos() - trackY);
-            approxRange = (float)sqrt(dx * dx + dy * dy);
+            dx_1 = (float)fabs(self->XPos() - trackX);
+            dy_1 = (float)fabs(self->YPos() - trackY);
+            approxRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
 
             //  Cobra - SEAD attack mode is high to get the SAM radar to turn on
             // if ( agApproach == AGA_LOW || missionType == AMIS_SEADESCORT || missionType == AMIS_SEADSTRIKE)
@@ -732,9 +732,9 @@ DownwindBypass:
 
             // 2001-07-12 S.G. Moved so a retargeting is not done
         FinalSG: // 2001-06-24 ADDED BY S.G. JUMPS BACK HERE IF TOO CLOSE FOR JSOWs or HARMS AND TARGET NOT EMITTING
-            dx = (float)fabs(self->XPos() - trackX);
-            dy = (float)fabs(self->YPos() - trackY);
-            approxRange = (float)sqrt(dx * dx + dy * dy);
+            dx_1 = (float)fabs(self->XPos() - trackX);
+            dy_1 = (float)fabs(self->YPos() - trackY);
+            approxRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
 
             if (groundTargetPtr)
             {
@@ -755,9 +755,9 @@ DownwindBypass:
                 approxTargetRange = (float)sqrt(xft * xft + yft * yft);
                 approxTargetRange = max(approxTargetRange, 1.0F);
 
-                dx = self->dmx[0][0] * xft + self->dmx[0][1] * yft + self->dmx[0][2] * zft;
-                dy = self->dmx[1][0] * xft + self->dmx[1][1] * yft + self->dmx[1][2] * zft;
-                ata = (float)acos(dx / approxTargetRange);
+                dx_1 = self->dmx[0][0] * xft + self->dmx[0][1] * yft + self->dmx[0][2] * zft;
+                dy_1 = self->dmx[1][0] * xft + self->dmx[1][1] * yft + self->dmx[1][2] * zft;
+                ata = (float)acos(dx_1 / approxTargetRange);
 
 
                 //Cobra - pullout and away from target
@@ -949,9 +949,9 @@ DownwindBypass:
 
             SetTrackPoint(ipX, ipY, AGattackAlt);
 
-            dx = (float)fabs(self->XPos() - trackX);
-            dy = (float)fabs(self->YPos() - trackY);
-            approxRange = (float)sqrt(dx * dx + dy * dy);
+            dx_1 = (float)fabs(self->XPos() - trackX);
+            dy_1 = (float)fabs(self->YPos() - trackY);
+            approxRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
 
             // Terrain follow around 1000 ft
             // 2001-07-12 MODIFIED BY S.G. SO SEAD STAY LOW UNTIL READY TO ATTACK
@@ -1075,28 +1075,28 @@ DownwindBypass:
         case Downwind:
         {
             float x, y, z;
-            float approxTargetRange, approxRange;
+            float approxTargetRange;
 
             agDoctrine = AGD_LOOK_SHOOT_LOOK;
             ipZ = trackZ = AGattackAlt;
 
             if (groundTargetPtr)
             {
-                dx = self->XPos() - groundTargetPtr->BaseData()->XPos();
-                dy = self->YPos() - groundTargetPtr->BaseData()->YPos();
+                dx_1 = self->XPos() - groundTargetPtr->BaseData()->XPos();
+                dy_1 = self->YPos() - groundTargetPtr->BaseData()->YPos();
             }
             else
             {
                 self->curWaypoint->GetLocation(&x, &y, &z);
-                dx = self->XPos() - x;
-                dy = self->YPos() - y;
+                dx_1 = self->XPos() - x;
+                dy_1 = self->YPos() - y;
             }
 
-            approxTargetRange = (float)sqrt(dx * dx + dy * dy);
+            approxTargetRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
 
-            dx = trackX - self->XPos();
-            dy = trackY - self->YPos();
-            approxRange = (float)sqrt(dx * dx + dy * dy);
+            dx_1 = trackX - self->XPos();
+            dy_1 = trackY - self->YPos();
+            approxRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
 
             // Flying toward target??....Wrong!!
             if (FabsF(approxTargetRange) < 0.2f * NM_TO_FT)
@@ -1521,9 +1521,9 @@ DownwindBypass:
 
             TrackPoint(0.0F, desSpeed/* KNOTS_TO_FTPSEC*/); // Cobra - aerial TrackPoint speed is in knots
 
-            dx = (float)fabs(self->XPos() - trackX);
-            dy = (float)fabs(self->YPos() - trackY);
-            approxRange = (float)sqrt(dx * dx + dy * dy);
+            dx_1 = (float)fabs(self->XPos() - trackX);
+            dy_1 = (float)fabs(self->YPos() - trackY);
+            approxRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
 
             // Increase the gains on final approach
             rStick *= 3.0f;
@@ -1633,9 +1633,9 @@ DownwindBypass:
 
             SimpleTrackSpeed(desSpeed * KNOTS_TO_FTPSEC);
 
-            dx = (float)fabs(self->XPos() - trackX);
-            dy = (float)fabs(self->YPos() - trackY);
-            approxRange = (float)sqrt(dx * dx + dy * dy);
+            dx_1 = (float)fabs(self->XPos() - trackX);
+            dy_1 = (float)fabs(self->YPos() - trackY);
+            approxRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
 
 
 
@@ -2050,9 +2050,9 @@ DownwindBypass:
             //==================================================
         case Stabalizing:
         {
-            dx = (float)fabs(self->XPos() - trackX);
-            dy = (float)fabs(self->YPos() - trackY);
-            approxRange = (float)sqrt(dx * dx + dy * dy);
+            dx_1 = (float)fabs(self->XPos() - trackX);
+            dy_1 = (float)fabs(self->YPos() - trackY);
+            approxRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
 
             if (approxRange < 2.0f * NM_TO_FT)
                 onStation = NotThereYet;
@@ -2276,11 +2276,11 @@ void DigitalBrain::SelectGroundTarget(int targetFilter)
  */
 void DigitalBrain::SelectGroundWeapon(void)
 {
-    int i;
-    Falcon4EntityClassType* classPtr;
+    int i = 0;
+    Falcon4EntityClassType* classPtr = NULL;
     int runAway = FALSE;
     SMSClass* Sms = self->Sms;
-    BombClass *theBomb;
+    BombClass *theBomb = NULL;
 
     hasAGMissile = FALSE;
     hasBomb = FALSE;
@@ -2445,7 +2445,6 @@ void DigitalBrain::SelectGroundWeapon(void)
 
     if (!hasWeapons && !isWing && ((ret = IsNotMainTargetSEAD()) || sentWingAGAttack != AG_ORDER_ATTACK))
     {
-        int i;
         int usComponents = self->GetCampaignObject()->NumberOfComponents();
 
         for (i = 0; i < usComponents; i++)
@@ -2776,10 +2775,10 @@ void DigitalBrain::SelectCampGroundTarget(void)
 // This routine is called until an attack profile can be established, then it is no longer call unless agDoctrine is reset to AGD_NONE
 void DigitalBrain::SetupAGMode(WayPointClass *cwp, WayPointClass *wp)
 {
-    int wpAction;
+    int wpAction = 0;
     UnitClass *campUnit = (UnitClass *)self->GetCampaignObject();
-    CampBaseClass *campBaseTarg;
-    float dx, dy, dz, range;
+    CampBaseClass *campBaseTarg = NULL;
+    float dx_1 = 0.0, dy_1 = 0.0, dz_1 = 0.0, range = 0.0;
     Falcon4EntityClassType* classPtr;
     WayPointClass *dwp;
     SMSClass* Sms = self->Sms;
@@ -3065,16 +3064,16 @@ void DigitalBrain::SetupAGMode(WayPointClass *cwp, WayPointClass *wp)
         ipZ = -self->GetA2GDumbLDAlt();
     }
 
-    dx = groundTargetPtr->BaseData()->XPos() - self->XPos();
-    dy = groundTargetPtr->BaseData()->YPos() - self->YPos();
-    dz = groundTargetPtr->BaseData()->ZPos() - self->ZPos();
+    dx_1 = groundTargetPtr->BaseData()->XPos() - self->XPos();
+    dy_1 = groundTargetPtr->BaseData()->YPos() - self->YPos();
+    dz_1 = groundTargetPtr->BaseData()->ZPos() - self->ZPos();
 
     // x-y get range
-    range = (float)sqrt(dx * dx + dy * dy) + 0.1f;
+    range = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1) + 0.1f;
 
     // normalize the x and y vector
-    dx /= range;
-    dy /= range;
+    dx_1 /= range;
+    dy_1 /= range;
 
     // see if we're too close in and set ipX/ipY accordingly
     if (range < 2.0f * NM_TO_FT)   // was 5.0
@@ -3359,7 +3358,7 @@ void DigitalBrain::DropBomb(float approxRange, float ata, RadarClass* theRadar)
 {
     FireControlComputer* FCC = self->FCC;
     SMSClass* Sms = self->Sms;
-    int wt;
+    int wt = 0;
 
     F4Assert(!Sms->curWeapon || Sms->curWeapon->IsBomb());
 
@@ -3609,7 +3608,7 @@ void DigitalBrain::DropGBU(float approxRange, float ata, RadarClass* theRadar)
     LaserPodClass* targetingPod = NULL;
     FireControlComputer* FCC = self->FCC;
     SMSClass* Sms = self->Sms;
-    float dir, dx, dy, angle;
+    float dir = 0.0, dx_1 = 0.0, dy_1 = 0.0, angle = 0.0;
     mlTrig trig;
 
     F4Assert(!Sms->curWeapon || Sms->curWeapon->IsBomb());
@@ -3700,9 +3699,9 @@ void DigitalBrain::DropGBU(float approxRange, float ata, RadarClass* theRadar)
             if (approxRange < 0.5F * FCC->airGroundRange)
             {
                 // Bail and try again
-                dx = (self->XPos() - trackX);
-                dy = (self->YPos() - trackY);
-                approxRange = (float)sqrt(dx * dx + dy * dy);
+                dx_1 = (self->XPos() - trackX);
+                dy_1 = (self->YPos() - trackY);
+                approxRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
                 dir = 1.0f;
 
                 if (rand() % 2)
@@ -3711,24 +3710,24 @@ void DigitalBrain::DropGBU(float approxRange, float ata, RadarClass* theRadar)
                 // Cobra - Slow-movers don't need to flyout too far
                 if (slowMover)
                 {
-                    if (dy < 0.0f)
+                    if (dy_1 < 0.0f)
                         ipX = trackX - dir * g_fAGSlowFlyoutRange * NM_TO_FT; // Cobra - added g_fAGFlyoutRange static range
                     else
                         ipX = trackX - dir * g_fAGSlowFlyoutRange * NM_TO_FT; // Cobra - added g_fAGFlyoutRange static range
 
-                    if (dx < 0.0f)
+                    if (dx_1 < 0.0f)
                         ipY = trackY - dir * g_fAGSlowFlyoutRange * NM_TO_FT; // Cobra - added g_fAGFlyoutRange static range
                     else
                         ipY = trackY + dir * g_fAGSlowFlyoutRange * NM_TO_FT;
                 }
                 else
                 {
-                    if (dy < 0.0f)
+                    if (dy_1 < 0.0f)
                         ipX = trackX - dir * g_fAGFlyoutRange * NM_TO_FT; // Cobra - added g_fAGFlyoutRange static range
                     else
                         ipX = trackX + dir * g_fAGFlyoutRange * NM_TO_FT;
 
-                    if (dx < 0.0f)
+                    if (dx_1 < 0.0f)
                         ipY = trackY - dir * g_fAGFlyoutRange * NM_TO_FT; // Cobra - added g_fAGFlyoutRange static range
                     else
                         ipY = trackY + dir * g_fAGFlyoutRange * NM_TO_FT;
@@ -3765,9 +3764,9 @@ void DigitalBrain::DropGBU(float approxRange, float ata, RadarClass* theRadar)
             if (onStation == Final && approxRange < 0.7F * FCC->airGroundRange || ata > 60.0F * DTR)
             {
                 // Bail and try again
-                dx = (self->XPos() - trackX);
-                dy = (self->YPos() - trackY);
-                approxRange = (float)sqrt(dx * dx + dy * dy);
+                dx_1 = (self->XPos() - trackX);
+                dy_1 = (self->YPos() - trackY);
+                approxRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
                 dir = 1.0f;
 
                 if (rand() % 2)
@@ -3776,24 +3775,24 @@ void DigitalBrain::DropGBU(float approxRange, float ata, RadarClass* theRadar)
                 // Cobra - Slow-movers don't need to flyout too far
                 if (slowMover)
                 {
-                    if (dy < 0.0f)
+                    if (dy_1 < 0.0f)
                         ipX = trackX - dir * g_fAGSlowFlyoutRange * NM_TO_FT; // Cobra - added g_fAGFlyoutRange static range
                     else
                         ipX = trackX - dir * g_fAGSlowFlyoutRange * NM_TO_FT; // Cobra - added g_fAGFlyoutRange static range
 
-                    if (dx < 0.0f)
+                    if (dx_1 < 0.0f)
                         ipY = trackY - dir * g_fAGSlowFlyoutRange * NM_TO_FT; // Cobra - added g_fAGFlyoutRange static range
                     else
                         ipY = trackY + dir * g_fAGSlowFlyoutRange * NM_TO_FT;
                 }
                 else
                 {
-                    if (dy < 0.0f)
+                    if (dy_1 < 0.0f)
                         ipX = trackX - dir * g_fAGFlyoutRange * NM_TO_FT; // Cobra - added g_fAGFlyoutRange static range
                     else
                         ipX = trackX + dir * g_fAGFlyoutRange * NM_TO_FT;
 
-                    if (dx < 0.0f)
+                    if (dx_1 < 0.0f)
                         ipY = trackY - dir * g_fAGFlyoutRange * NM_TO_FT; // Cobra - added g_fAGFlyoutRange static range
                     else
                         ipY = trackY + dir * g_fAGFlyoutRange * NM_TO_FT;
@@ -3828,9 +3827,9 @@ void DigitalBrain::DropGBU(float approxRange, float ata, RadarClass* theRadar)
         }
         else if (SimLibElapsedTime == waitingForShot) // Turn but keep designating
         {
-            dx = (trackX - self->XPos());
-            dy = (trackY - self->YPos());
-            angle = 45.0F * DTR + (float)atan2(dy, dx);
+            dx_1 = (trackX - self->XPos());
+            dy_1 = (trackY - self->YPos());
+            angle = 45.0F * DTR + (float)atan2(dy_1, dx_1);
             mlSinCos(&trig, angle);
             ipX = trackX + trig.cos * 7.5f * NM_TO_FT;
             ipY = trackY + trig.sin * 7.5f * NM_TO_FT;
@@ -3924,25 +3923,25 @@ void DigitalBrain::FireAGMissile(float approxRange, float ata)
             // 2001-07-16 MODIFIED BY S.G. DEPENDING IF WE HAVE WEAPONS LEFT, PULL MORE OR LESS
             if (groundTargetPtr)
             {
-                float dx = groundTargetPtr->BaseData()->XPos() - self->XPos();
-                float dy = groundTargetPtr->BaseData()->YPos() - self->YPos();
+                float dx_1 = groundTargetPtr->BaseData()->XPos() - self->XPos();
+                float dy_1 = groundTargetPtr->BaseData()->YPos() - self->YPos();
 
                 // x-y get range
-                float range = (float)sqrt(dx * dx + dy * dy) + 0.1f;
+                float range = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1) + 0.1f;
 
                 // normalize the x and y vector
-                dx /= range;
-                dy /= range;
+                dx_1 /= range;
+                dy_1 /= range;
 
                 if (Sms->NumCurrentWpn() == 1)
                 {
-                    ipX = self->XPos() + dy * 5.0f * NM_TO_FT - dx * 1.5f * NM_TO_FT;
-                    ipY = self->YPos() - dx * 5.0f * NM_TO_FT - dy * 1.5f * NM_TO_FT;
+                    ipX = self->XPos() + dy_1 * 5.0f * NM_TO_FT - dx_1 * 1.5f * NM_TO_FT;
+                    ipY = self->YPos() - dx_1 * 5.0f * NM_TO_FT - dy_1 * 1.5f * NM_TO_FT;
                 }
                 else
                 {
-                    ipX = self->XPos() + dy * 3.0f * NM_TO_FT - dx * 1.5f * NM_TO_FT;
-                    ipY = self->YPos() - dx * 3.0f * NM_TO_FT - dy * 1.5f * NM_TO_FT;
+                    ipX = self->XPos() + dy_1 * 3.0f * NM_TO_FT - dx_1 * 1.5f * NM_TO_FT;
+                    ipY = self->YPos() - dx_1 * 3.0f * NM_TO_FT - dy_1 * 1.5f * NM_TO_FT;
                 }
             }
 
@@ -4008,10 +4007,10 @@ int DigitalBrain::FireRocket(float approxRange, float ata)
         int pmode = 0;
         int rmode = 0;
 
-        float dx = groundTargetPtr->BaseData()->XPos() - self->FCC->groundImpactX;
-        float dy = groundTargetPtr->BaseData()->YPos() - self->FCC->groundImpactY;
-        float dz = groundTargetPtr->BaseData()->ZPos() - self->FCC->groundImpactZ;
-        float deltaEl = (float)atan2(-dz, sqrt(dx * dx + dy * dy));
+        float dx_1 = groundTargetPtr->BaseData()->XPos() - self->FCC->groundImpactX;
+        float dy_1 = groundTargetPtr->BaseData()->YPos() - self->FCC->groundImpactY;
+        float dz_1 = groundTargetPtr->BaseData()->ZPos() - self->FCC->groundImpactZ;
+        float deltaEl = (float)atan2(-dz_1, sqrt(dx_1 * dx_1 + dy_1 * dy_1));
 
         float taz, tel; // target
         float tx = groundTargetPtr->BaseData()->XPos();
@@ -4072,9 +4071,9 @@ int DigitalBrain::FireRocket(float approxRange, float ata)
             return 1;
         }
 
-        dx = (float)fabs(self->XPos() - tx);
-        dy = (float)fabs(self->YPos() - ty);
-        approxRange = (float)sqrt(dx * dx + dy * dy);
+        dx_1 = (float)fabs(self->XPos() - tx);
+        dy_1 = (float)fabs(self->YPos() - ty);
+        approxRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
 
         switch (rocketMnvr)
         {
@@ -4852,7 +4851,7 @@ int DigitalBrain::JSOWSetup(float rx, float ry, float ata, float approxRange)
 
 void DigitalBrain::AGflyOut()
 {
-    float dir, dx, dy, x, y, z, approxRange;
+    float dir = 0.0, dx_1 = 0.0, dy_1 = 0.0, x = 0.0, y = 0.0, z = 0.0, approxRange = 0.0;
     mlTrig trig;
 
     if (groundTargetPtr)
@@ -4867,16 +4866,16 @@ void DigitalBrain::AGflyOut()
         trackY = y;
     }
 
-    dx = trackX - self->XPos();
-    dy = trackY - self->YPos();
-    approxRange = (float)sqrt(dx * dx + dy * dy);
+    dx_1 = trackX - self->XPos();
+    dy_1 = trackY - self->YPos();
+    approxRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
 
     dir = 1.0f;
 
     if (rand() % 2)
         dir *= -1.0f;
 
-    float angle = 90.0F * DTR * dir + (float)atan2(dy, dx);
+    float angle = 90.0F * DTR * dir + (float)atan2(dy_1, dx_1);
     mlSinCos(&trig, angle);
 
     // Cobra - Slow-movers don't need to flyout too far
@@ -4891,20 +4890,20 @@ void DigitalBrain::AGflyOut()
         ipY = trackY + trig.sin * g_fAGFlyoutRange * NM_TO_FT;
     }
 
-    dx = ipX - trackX;
-    dy = ipY - trackY;
-    approxRange = (float)sqrt(dx * dx + dy * dy);
+    dx_1 = ipX - trackX;
+    dy_1 = ipY - trackY;
+    approxRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
 
     if (slowMover)
     {
         if (approxRange < g_fAGSlowFlyoutRange * NM_TO_FT)
         {
-            if (dy < 0.0f)
+            if (dy_1 < 0.0f)
                 ipX = trackX - dir * g_fAGSlowFlyoutRange * NM_TO_FT;
             else
                 ipX = trackX + dir * g_fAGSlowFlyoutRange * NM_TO_FT;
 
-            if (dx < 0.0f)
+            if (dx_1 < 0.0f)
                 ipY = trackY - dir * g_fAGSlowFlyoutRange * NM_TO_FT;
             else
                 ipY = trackY + dir * g_fAGSlowFlyoutRange * NM_TO_FT;
@@ -4912,12 +4911,12 @@ void DigitalBrain::AGflyOut()
     }
     else if (approxRange < g_fAGFlyoutRange * NM_TO_FT)
     {
-        if (dy < 0.0f)
+        if (dy_1 < 0.0f)
             ipX = trackX - dir * g_fAGFlyoutRange * NM_TO_FT;
         else
             ipX = trackX + dir * g_fAGFlyoutRange * NM_TO_FT;
 
-        if (dx < 0.0f)
+        if (dx_1 < 0.0f)
             ipY = trackY - dir * g_fAGFlyoutRange * NM_TO_FT;
         else
             ipY = trackY + dir * g_fAGFlyoutRange * NM_TO_FT;

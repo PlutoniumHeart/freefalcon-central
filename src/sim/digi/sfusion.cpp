@@ -230,7 +230,6 @@ void DigitalBrain::SensorFusion(void)
         {
 
             //Cobra moved spotted stuff here
-            CampBaseClass *campBaseObj = (CampBaseClass *)baseObj;
 
             if (baseObj->IsSim())
             {

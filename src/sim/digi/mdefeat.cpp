@@ -100,12 +100,12 @@ void DigitalBrain::MissileDefeatCheck(void)
         missileShotTimer = 0;
 
     // 2000-09-05 this will make the range not target base but from us to the missile
-    float dx, dy, dz, missileRange;
+    float dx_1, dy_1, dz_1, missileRange;
 
-    dx = self->incomingMissile[0]->XPos() - self->XPos();
-    dy = self->incomingMissile[0]->YPos() - self->YPos();
-    dz = self->incomingMissile[0]->ZPos() - self->ZPos();
-    missileRange = (float)sqrt(dx * dx + dy * dy + dz * dz);
+    dx_1 = self->incomingMissile[0]->XPos() - self->XPos();
+    dy_1 = self->incomingMissile[0]->YPos() - self->YPos();
+    dz_1 = self->incomingMissile[0]->ZPos() - self->ZPos();
+    missileRange = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1 + dz_1 * dz_1);
 
     // If the missile's range is more than the previous missile range (that we kept), the missile has passed by us.
     if (missileRange > self->incomingMissileRange && self->incomingMissileRange)

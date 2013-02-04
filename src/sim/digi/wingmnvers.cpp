@@ -359,7 +359,6 @@ float DigitalBrain::SimpleTrackElevation(float zft, float scale)
     {
         float maxPitch = min(MAX_AF_PITCH, aeroDataset[self->af->VehicleIndex()].inputData[AeroDataSet::ThetaMax]);
         float curPitch = self->Pitch() * 0.85f; // Current pitch with some leadway
-        float scale;
 
         // scale the pitch based on on the difference of pitch from max
         if (curPitch > maxPitch)

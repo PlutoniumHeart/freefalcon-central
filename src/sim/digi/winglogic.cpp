@@ -854,9 +854,9 @@ void DigitalBrain::AiCheckLandTakeoff(void)
 
         if (Airbase)
         {
-            float dx = self->XPos() - Airbase->XPos();
-            float dy = self->YPos() - Airbase->YPos();
-            distAirbase = (float)sqrt(dx * dx + dy * dy);
+            float dx_1 = self->XPos() - Airbase->XPos();
+            float dy_1 = self->YPos() - Airbase->YPos();
+            distAirbase = (float)sqrt(dx_1 * dx_1 + dy_1 * dy_1);
         }
 
         updateTime = SimLibElapsedTime + 15 * CampaignSeconds;

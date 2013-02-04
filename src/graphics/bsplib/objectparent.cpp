@@ -75,7 +75,9 @@ void ObjectParent::SetupTable(char *basename)
 #endif
 
     // COBRA - DX - Switching btw Old and New Engine - Select the right Header File
-    strcpy(filename, basename);
+	if(strlen(basename) > sizeof filename)
+		return;
+    strcpy_s(filename, sizeof(filename), basename);
     // Open the master object file
     strcat(filename, ".DXH");
 
