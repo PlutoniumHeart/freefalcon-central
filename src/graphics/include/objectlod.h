@@ -23,17 +23,16 @@ class ObjectLOD
 public:
     ObjectLOD();
     ~ObjectLOD();
+protected:
+    void Unload(void);
+    DWORD Load(void);
+    void Free(void);
 
-
+public:
     void Reference(void);
     void Release(void);
     BOOL Fetch(void); // True means ready to draw.  False means still waiting.
-    void Draw(void) const
-    {
-        ShiAssert(root);
-		if(root)
-			root->Draw();
-    };
+    void Draw(void) const;
     void ReferenceTexSet(DWORD TexSetNr = 0, DWORD TexSetMax = 1);
     void ReleaseTexSet(DWORD TexSetNr = 0, DWORD TexSetMax = 1);
 
@@ -43,35 +42,27 @@ public:
     static void CleanupTable();
     static bool UpdateLods(void);
     static void WaitUpdates(void);
-    static void SetRatedLoad(bool Status)
-    {
-        RatedLoad = false;
-    }
-
-
-
+    static void SetRatedLoad(bool Status);
 
     static CRITICAL_SECTION cs_ObjectLOD;
 
 protected:
-    void Unload(void);
-    DWORD Load(void);
-    void Free(void);
-
-    bool OnOrder, OnRelease;
+    bool OnOrder;
+	bool OnRelease;
     int refCount; // How many instances of this LOD are in use
-    short WhoAmI(void)
-    {
-        return static_cast<short>(this - TheObjectLODs);    // Return the Self LOD Id
-    }
+    short WhoAmI(void);
 
     static FileMemMap   ObjectLodMap; // JPO - MMFILE
     static BNodeType *tagListBuffer;
     static BYTE *LodBuffer;
     static DWORD LodBufferSize;
     static bool RatedLoad;
-    static short *CacheLoad, *CacheRelease, LoadIn, LoadOut, ReleaseIn, ReleaseOut;
-
+    static short *CacheLoad;
+	static short *CacheRelease;
+	static short LoadIn;
+	static short LoadOut;
+	static short ReleaseIn;
+	static short ReleaseOut;
 
 public:
     BRoot *root; // NULL until loaded, then pointer to node tree

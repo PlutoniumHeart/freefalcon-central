@@ -5,16 +5,17 @@
 
     Provides structures and definitions for 3D objects.
 \***************************************************************************/
-#include "stdafx.h"
-#include <io.h>
-#include <fcntl.h>
-#include "Loader.h"
 #include "ObjectLOD.h"
-#include "Falclib/Include/IsBad.h"
 
 #include "Graphics/DXEngine/DXDefines.h"
 #include "Graphics/DXEngine/DXEngine.h"
 #include "Graphics/DXEngine/DXVBManager.h"
+
+#include "stdafx.h"
+#include <io.h>
+#include <fcntl.h>
+#include "Loader.h"
+#include "Falclib/Include/IsBad.h"
 
 extern bool g_bUse_DX_Engine;
 
@@ -33,8 +34,12 @@ FileMemMap  ObjectLOD::ObjectLodMap;
 BYTE *ObjectLOD::LodBuffer;
 DWORD ObjectLOD::LodBufferSize;
 bool ObjectLOD::RatedLoad;
-short *ObjectLOD::CacheLoad, *ObjectLOD::CacheRelease, ObjectLOD::LoadIn, ObjectLOD::LoadOut, ObjectLOD::ReleaseIn, ObjectLOD::ReleaseOut;
-
+short *ObjectLOD::CacheLoad;
+short *ObjectLOD::CacheRelease;
+short ObjectLOD::LoadIn;
+short ObjectLOD::LoadOut;
+short ObjectLOD::ReleaseIn;
+short ObjectLOD::ReleaseOut;
 
 CRITICAL_SECTION ObjectLOD::cs_ObjectLOD;
 static  int maxTagList;
@@ -55,6 +60,26 @@ ObjectLOD::ObjectLOD()
 ObjectLOD::~ObjectLOD()
 {
     ShiAssert(!root);
+}
+
+
+void ObjectLOD::Draw() const
+{
+	ShiAssert(root);
+		if(root)
+			root->Draw();
+}
+
+
+void ObjectLOD::SetRatedLoad(bool status)
+{
+	RatedLoad = false;
+}
+
+
+short ObjectLOD::WhoAmI()
+{
+    return static_cast<short>(this - TheObjectLODs);    // Return the Self LOD Id
 }
 
 
@@ -352,7 +377,12 @@ DWORD ObjectLOD::Load(void)
     gDebugLodID = WhoAmI();
 
     // check for buffer size... if smaller make a new Buffer
-    if (filesize > LodBufferSize) free(LodBuffer), LodBufferSize = filesize, LodBuffer = (BYTE*)malloc(LodBufferSize);
+    if (filesize > LodBufferSize) 
+	{
+		free(LodBuffer);
+		LodBufferSize = filesize;
+		LodBuffer = (BYTE*)malloc(LodBufferSize);
+	}
 
     //Default the Root to null
     root = NULL;

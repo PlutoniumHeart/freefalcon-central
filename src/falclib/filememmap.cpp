@@ -88,7 +88,8 @@ BOOL FileMemMap::ReadDataAt(DWORD offset, void *buffer, DWORD size)
 {
     int result = SetFilePointer(m_hFile, offset, NULL, FILE_BEGIN);
 
-    if (result == -1) return FALSE;
+    if (result == -1) 
+		return FALSE;
 
     DWORD bytesRead;
     result = ReadFile(m_hFile, buffer, size, &bytesRead, NULL);
