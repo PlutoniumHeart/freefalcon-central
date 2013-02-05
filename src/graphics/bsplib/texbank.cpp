@@ -560,7 +560,8 @@ void TextureBankClass::ReadImageDDS(DWORD id)
     fp = fopen(szFile, "rb");
 
     // RV - RED - Avoid CTD if a missing texture
-    if (!fp) return;
+    if (!fp) 
+		return;
 
     fread(&dwMagic, 1, sizeof(DWORD), fp);
     ShiAssert(dwMagic == MAKEFOURCC('D', 'D', 'S', ' '));
