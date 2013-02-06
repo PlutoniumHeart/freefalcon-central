@@ -6358,8 +6358,23 @@ void CockpitManager::SetTurbulence(void)
     PitTurbulence.x = PitTurbulence.x * DisplayOptions.DispWidth;
     // Being 2D Pit with no depth, differently from 3D Pith, shaking may be too much violent
     // so, we r going to apply a Square mantaining to shake values sign to it and then multiply by 2
-    PitTurbulence.y = (float)((int)(PitTurbulence.y * 2.0f / sqrtf(PitTurbulence.y)));
-    PitTurbulence.x = (float)((int)(PitTurbulence.x * 2.0f / sqrtf(PitTurbulence.x)));
+	// Pu239 Someone forgot to consider what happens when PitTurbulence values are 0
+	if(PitTurbulence.y > 0)
+	{
+		PitTurbulence.y = (float)((int)(PitTurbulence.y * 2.0f / sqrtf(PitTurbulence.y)));
+	}
+	else
+	{
+		PitTurbulence.y = 0;
+	}
+	if(PitTurbulence.x > 0)
+	{
+		PitTurbulence.x = (float)((int)(PitTurbulence.x * 2.0f / sqrtf(PitTurbulence.x)));
+	}
+	else
+	{
+		PitTurbulence.x = 0;
+	}
 }
 
 
