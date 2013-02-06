@@ -491,10 +491,15 @@ void FarTexDB::Release(TextureID texID)
 {
     ShiAssert(IsReady());
 
-    if (texID == INVALID_TEXID) return;
+    if (texID == INVALID_TEXID) 
+		return;
 
-    ShiAssert(texID >= (WORD) 0);
-    ShiAssert(texID < (WORD) texCount);
+	if(texID >= texCount)
+		printf("");
+
+	// Pu239 How the hell can someone mixed up DWORD with WORD??
+    ShiAssert(texID >= (DWORD) 0);
+    ShiAssert(texID < (DWORD) texCount);
 
     EnterCriticalSection(&cs_textureList);
 

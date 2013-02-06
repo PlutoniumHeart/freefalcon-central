@@ -1785,7 +1785,12 @@ void LoadPriorityTables(void)
 // This is high level RoE. Lower level Rules of Engagement are dealt with on the unit level.
 int GetRoE(Team a, Team b, int type)
 {
-    ShiAssert(TeamInfo[a]);
+	//bool temp = false;
+	//if(TeamInfo[a] == NULL)
+	//{
+	//	temp = true;
+	//}
+ //   ShiAssert(TeamInfo[a]);
 
     if (TeamInfo[a])
     {

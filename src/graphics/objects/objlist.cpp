@@ -58,6 +58,9 @@ ObjectDisplayList::~ObjectDisplayList()
 void ObjectDisplayList::InsertObject(DrawableObject *object)
 {
     ShiAssert(object);
+	if(object->InDisplayList())
+		return;
+	bool temp = object->InDisplayList();
     ShiAssert(!object->InDisplayList());
 
 #ifdef _SANITY_CHECK_

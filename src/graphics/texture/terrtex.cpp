@@ -280,7 +280,8 @@ void TextureDB::Cleanup(void)
     F4ScopeLock sl(cs_textureList);
 
 
-    if (!TextureSets) return;
+    if (!TextureSets) 
+		return;
 
 
     // Stop receiving time updates
@@ -302,9 +303,9 @@ void TextureDB::Cleanup(void)
 
             TextureSets[i].tiles[j].Paths = NULL;
 #else
-            delete[] TextureSets[i].tiles[j].Areas;
+            delete [] TextureSets[i].tiles[j].Areas;
             TextureSets[i].tiles[j].Areas = NULL;
-            delete[] TextureSets[i].tiles[j].Paths;
+            delete [] TextureSets[i].tiles[j].Paths;
             TextureSets[i].tiles[j].Paths = NULL;
 #endif
 
@@ -324,7 +325,7 @@ void TextureDB::Cleanup(void)
         if (TextureSets[i].tiles) MemFreePtr(TextureSets[i].tiles);
 
 #else
-        delete[] TextureSets[i].tiles;
+        delete [] TextureSets[i].tiles;
 #endif
         TextureSets[i].tiles = NULL;
     }
@@ -816,6 +817,7 @@ void TextureDB::Load(SetEntry* pSet, TileEntry* pTile, int res, bool forceNoDDS)
             char message[256];
             sprintf(message, "Failed to open %s", filename);
             ShiError(message);
+			return;
         }
 
         // Read the image data (note that ReadTextureImage will close texFile for us)
@@ -823,7 +825,10 @@ void TextureDB::Load(SetEntry* pSet, TileEntry* pTile, int res, bool forceNoDDS)
         result = ReadTextureImage(&texFile);
 
         if (result != GOOD_READ)
+		{
             ShiError("Failed to read terrain texture. CD Error?");
+			return;
+		}
 
         // Store pointer to the image data
         pTile->bits[res] = (BYTE*)texFile.image.image;
@@ -1072,47 +1077,55 @@ void TextureDB::Free(SetEntry* pSet, TileEntry* pTile, int res)
     ShiAssert(pTile->handle[res] == NULL);
 
     // KLUDGE to prevent release runtime crash
-    if (!pTile || !pSet) return;
+    if (pTile)
+	{
+		// Release the image memory if it isn't already gone
+		if ((char*)pTile->bits[res])
+		{
+			glReleaseMemory((char *)pTile->bits[res]);
+			pTile->bits[res] = NULL;
 
-    // Release the image memory if it isn't already gone
-    if ((char*)pTile->bits[res])
-    {
-        glReleaseMemory((char *)pTile->bits[res]);
-        pTile->bits[res] = NULL;
-
-        // Night pixels
-        if ((char*)pTile->bitsN[res])
-        {
-            glReleaseMemory((char *)pTile->bitsN[res]);
-            pTile->bitsN[res] = NULL;
-        }
-
-#ifdef _DEBUG
-        LoadedTextureCount--;
-#endif
-    }
-
-    pSet->refCount--;
-
-    // Free the set palette if no tiles are in use
-    if (pSet->refCount == 0)
-    {
-        if (DisplayOptions.m_texMode != DisplayOptionsClass::TEX_MODE_DDS)
-        {
-            if (pSet->palHandle)
-            {
-                delete(PaletteHandle *)pSet->palHandle;
-                pSet->palHandle = NULL;
-            }
-
-            glReleaseMemory(pSet->palette);
-            pSet->palette = NULL;
-        }
+			// Night pixels
+			if ((char*)pTile->bitsN[res])
+			{
+				glReleaseMemory((char *)pTile->bitsN[res]);
+				pTile->bitsN[res] = NULL;
+			}
 
 #ifdef _DEBUG
-        LoadedSetCount--;
+			LoadedTextureCount--;
 #endif
-    }
+		}
+
+		pSet->refCount--;
+	}
+
+	if(pSet)
+	{
+		// Free the set palette if no tiles are in use
+		if (pSet->refCount == 0)
+		{
+			if (DisplayOptions.m_texMode != DisplayOptionsClass::TEX_MODE_DDS)
+			{
+				if (pSet->palHandle)
+				{
+					delete(PaletteHandle *)pSet->palHandle;
+					pSet->palHandle = NULL;
+				}
+
+				glReleaseMemory(pSet->palette);
+				pSet->palette = NULL;
+			}
+		}
+#ifdef _DEBUG
+			LoadedSetCount--;
+#endif
+	}
+	else
+	{
+		printf("");
+		return;
+	}
 }
 
 // Select a "Load"ed texture into an RC for immediate use by the rasterizer

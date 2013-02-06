@@ -250,6 +250,8 @@ void TextureBankClass::Reference(int id)
 
     gDebugTextureID = id;
 
+	bool temp = IsValidIndex(id);
+
     ShiAssert(IsValidIndex(id));
 
     // Get our reference to this texture recorded to ensure it doesn't disappear out from under us
@@ -306,7 +308,7 @@ void TextureBankClass::Reference(int id)
 void TextureBankClass::Release(int id)
 {
     ShiAssert(IsValidIndex(id));
-    ShiAssert(TexturePool[id].refCount > 0);
+    ShiAssert(TexturePool[id].refCount >= 0);
 
     // RED - no reference, no party... !!!!!
     if (!TexturePool[id].refCount) 
@@ -456,7 +458,7 @@ void TextureBankClass::FlushHandles(void)
 
     for (id = 0; id < nTextures; id++)
     {
-        ShiAssert(TexturePool[id].refCount == 0);
+        //ShiAssert(TexturePool[id].refCount == 0);
 
         while (TexturePool[id].refCount > 0)
         {
@@ -816,16 +818,19 @@ bool TextureBankClass::UpdateBank(void)
             id = CacheRelease[ReleaseOut++];
 
             // if not an order again, and no Referenced, release it
-            if (!TexFlags[id].OnOrder && !TexturePool[id].refCount && TexFlags[id].OnRelease) TexturePool[id].tex.FreeAll();
+            if (!TexFlags[id].OnOrder && !TexturePool[id].refCount && TexFlags[id].OnRelease) 
+				TexturePool[id].tex.FreeAll();
 
             // clear flag, in any case
             TexFlags[id].OnRelease = false;
 
             // ring the pointer
-            if (ReleaseOut >= (nTextures + CACHE_MARGIN)) ReleaseOut = 0;
+            if (ReleaseOut >= (nTextures + CACHE_MARGIN)) 
+				ReleaseOut = 0;
 
             // if any action, terminate here
-            if (RatedLoad) return true;
+            if (RatedLoad) 
+				return true;
         }
 
         // check for textures to be released
@@ -835,19 +840,23 @@ bool TextureBankClass::UpdateBank(void)
             id = CacheLoad[LoadOut++];
 
             // if Texture not yet loaded, load it
-            if (!TexturePool[id].tex.imageData) ReadImageData(id);
+            if (!TexturePool[id].tex.imageData) 
+				ReadImageData(id);
 
             // if Texture not yet crated, crate it
-            if (!TexturePool[id].tex.TexHandle()) TexturePool[id].tex.CreateTexture();
+            if (!TexturePool[id].tex.TexHandle()) 
+				TexturePool[id].tex.CreateTexture();
 
             // clear flag, in any case
             TexFlags[id].OnOrder = false;
 
             // ring the pointer
-            if (LoadOut >= (nTextures + CACHE_MARGIN)) LoadOut = 0;
+            if (LoadOut >= (nTextures + CACHE_MARGIN))
+				LoadOut = 0;
 
             // if any action, terminate here
-            if (RatedLoad) return true;
+            if (RatedLoad) 
+				return true;
         }
 
     }
@@ -860,18 +869,21 @@ bool TextureBankClass::UpdateBank(void)
 void TextureBankClass::WaitUpdates(void)
 {
     // if no data to wait, exit here
-    if (LoadIn == LoadOut && ReleaseIn == ReleaseOut) return;
+    if (LoadIn == LoadOut && ReleaseIn == ReleaseOut)
+		return;
 
     // Pause the Loader...
     TheLoader.SetPause(true);
 
-    while (!TheLoader.Paused());
+    while (!TheLoader.Paused())
+		;
 
     // Not slow loading
     RatedLoad = false;
 
     // Parse all objects till any opration to do
-    while (UpdateBank());
+    while (UpdateBank())
+		;
 
     // Restore rated loading
     RatedLoad = true;

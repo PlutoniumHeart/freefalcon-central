@@ -17,7 +17,9 @@ class DrawableObject
 public:
     DrawableObject(float s)
     {
-        drawClassID = Default, scale = s, parentList = NULL, prev = next = NULL;
+        drawClassID = Default;
+		scale = s; parentList = NULL;
+		prev = next = NULL;
     };
     // sfr: update parent list before destroying...
     virtual ~DrawableObject()
@@ -29,34 +31,34 @@ public:
     virtual float GetRadarSign(void)
     {
         return 0.0f;
-    }
+    };
 
     enum DrawClass { Default, BSP, GroundVehicle, Guys, Building, Platform, Bridge, Roadbed, Overcast, Puffy, Trail, realClouds }; //JAM 09Nov03
 
     DrawClass GetClass() const
     {
         return drawClassID;
-    }
+    };
     float Radius() const
     {
         return radius;
-    }
+    };
     void GetPosition(Tpoint* pos)
     {
         *pos = position;
-    }
+    };
     float X() const
     {
         return position.x;
-    }
+    };
     float Y() const
     {
         return position.y;
-    }
+    };
     float Z() const
     {
         return position.z;
-    }
+    };
 
     void SetScale(float s)
     {
